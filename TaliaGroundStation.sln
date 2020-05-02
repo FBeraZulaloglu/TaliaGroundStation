@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaliaGroundStation", "TaliaGroundStation\TaliaGroundStation.csproj", "{A29B5519-FC3B-4CF5-98C1-616C3098197E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A29B5519-FC3B-4CF5-98C1-616C3098197E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A29B5519-FC3B-4CF5-98C1-616C3098197E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A29B5519-FC3B-4CF5-98C1-616C3098197E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A29B5519-FC3B-4CF5-98C1-616C3098197E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3B07BFC9-3596-4B12-A078-200A31CAEBC9}
+	EndGlobalSection
+EndGlobal
