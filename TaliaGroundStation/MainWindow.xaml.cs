@@ -23,6 +23,25 @@ namespace TaliaGroundStation
         public MainWindow()
         {
             InitializeComponent();
+            
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void OpenLock(object sender, RoutedEventArgs e)
+        {
+            //servonun çalışması için komut gönder
+            //send command to start the servo motor
+            MessageBox.Show("Ayrılma Mekanizması Açıldı!!");
+        }
+
+        private void OpenBuzzer(object sender, RoutedEventArgs e)
+        {
+            //buzzerın çalışmkası için komut gönder
+            //send command to start buzzer
         }
     }
 }
