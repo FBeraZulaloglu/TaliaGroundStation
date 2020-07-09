@@ -3,8 +3,10 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:user="clr-namespace:TaliaGroundStation.UserControls"
     xmlns:Controls="clr-namespace:Microsoft.Expression.Utility.Controls;assembly=Microsoft.Expression.Utility"
     xmlns:local="clr-namespace:TaliaGroundStation"
+    
     x:Class="TaliaGroundStation.MainWindow"
         mc:Ignorable="d"
         Title="MainWindow" MinHeight="400" MinWidth="600" WindowStartupLocation="CenterScreen" WindowState="Maximized" Background="#FF444242">
@@ -22,24 +24,28 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <local:SpeedGauge Grid.Column="1" Grid.Row="2"/>
-        <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="3"
-                   Source="C:\Users\faruk\Desktop\Python_ML_OpenCV\OPENCV\deep-learning-face-detection\dog.jpg"/>
+        <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0"
+                   Source="TaliaLogo.png"/>
+        <TextBlock Grid.Row="1" FontSize="20" HorizontalAlignment="Stretch" VerticalAlignment="Top">Video Aktarım Bilgisi :</TextBlock>
+        <TextBlock Grid.Row="1" FontSize="20" HorizontalAlignment="Stretch" VerticalAlignment="Center" >Zaman :</TextBlock>
+        <TextBlock Grid.Row="1" FontSize="20" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" >DURUM : </TextBlock>
+
+        <user:Pitch_Roll_Yaw_Graph Grid.Column="1" Margin="5,0,0,0" Grid.Row="2"  />
+        <user:Pressure_Temperature_Graph Grid.Column="1" Grid.Row="3"  />
+        <local:TelemetryTable Grid.Column="1" Height="266" Grid.RowSpan="3" VerticalAlignment="Top" Width="Auto" Grid.ColumnSpan="2" Margin="0,-9,0,0" Loaded="TelemetryTable_Loaded"/>
+        <local:Simulation Grid.Column="3"  Grid.Row="1"  Grid.RowSpan="2"/>
+        <local:MapControl Grid.Column="3" Grid.Row="0" HorizontalAlignment="Stretch"/>
+        <local:LiveVideo Grid.Column="3" Grid.Row="3" VerticalAlignment="Stretch"/>
+
+        
+        <!--Control Buttons-->
         <StackPanel x:Name="ControlButtons" Orientation="Vertical" Margin="0 10 0 0"  Grid.Row="2" >
             <TextBlock Text="Control Buttons" TextAlignment="Center"/>
             <Button x:Name="openLock" Content="Ayrılma &#xD;&#xA;Mekanizmasını &#xD;&#xA;Aç" Click="OpenLock" Margin="0 10 0 0" FontSize="10" />
             <Button x:Name="openBuzzer" Content="Buzzerı &#xD;&#xA;Çalıştır" Click="OpenBuzzer" Margin="0 10 0 0" />
         </StackPanel>
-        <Button Content="Load Video" Grid.Row="1"/>
-        <Button Content="VİDEO" Grid.Column="3" Grid.Row="2" Grid.RowSpan="2"/>
-        <Button Content="Telemetri Verisi" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,0" Grid.RowSpan="2"/>
-        <Button Content="Model Satelite Simulation" Grid.Column="3" Grid.Row="0" Grid.RowSpan="2" Margin="0,0,0,0"/>
-        <Button Content="Temperature" Grid.Column="1" Grid.Row="2"/>
-        <Controls:MenuButton Content="Graphs" VerticalAlignment="Top" Margin="0,25,0,0" />
-        <Controls:MenuButton Content="MAP" VerticalAlignment="Top"/>
-        <Button Content="Speed" Grid.Column="2" Grid.Row="2"/>
-        <Button Content="Volt" Grid.Column="1" Grid.Row="3"/>
-        <Button Content="Pressure" Grid.Column="2" Grid.Row="3"/>
+
+        <Button x:Name="TransmitVideo" Grid.Row="3" Click="videoSending">SEND VİDEO</Button>
 
     </Grid>
 </Window>

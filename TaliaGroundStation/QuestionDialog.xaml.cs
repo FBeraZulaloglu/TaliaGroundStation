@@ -10,19 +10,27 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace TaliaGroundStation
 {
     /// <summary>
-    /// Interaction logic for SpeedGauge.xaml
+    /// Interaction logic for QuestionDialog.xaml
     /// </summary>
-    public partial class SpeedGauge : UserControl
+    public partial class QuestionDialog : Window
     {
-        public SpeedGauge()
+        public bool confirmed = false;
+        public QuestionDialog(String question = null)
         {
             InitializeComponent();
+			this.lblQuestion.Content = question;
         }
-    }
+
+		private void yesButton_clicked(object sender, RoutedEventArgs e)
+		{
+			this.DialogResult = true;
+			confirmed = true;
+		}
+		
+	}
 }

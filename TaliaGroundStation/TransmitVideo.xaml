@@ -1,0 +1,20 @@
+﻿<Window x:Class="TaliaGroundStation.TransmitVideo"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TaliaGroundStation"
+        mc:Ignorable="d"
+        Title="TransmitVideo" Height="450" Width="800" AllowDrop="True" MouseLeftButtonDown="solTiklaBırak" Drop="dropTheFile">
+    <Grid>
+        <TextBox x:Name="sourceFile" Height="23" Margin="500,176,10,0" TextWrapping="Wrap" Text="&#xD;&#xA;" VerticalAlignment="Top"/>
+        <Label Content="VİDEO YOLU" HorizontalAlignment="Left" Margin="570,118,0,0" VerticalAlignment="Top" Width="120"/>
+        <Button Content="Aktar" HorizontalAlignment="Left" Margin="595,244,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="-0.447,-0.066" Click="Button_Click"/>
+        <Button Content="Göster" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="595,219,0,0" Click="fileGöster"/>
+
+        <MediaElement x:Name="videoElement" AllowDrop="True" LoadedBehavior="Play" Source="" Margin="10,10,330,10"/>
+        <Border x:Name="mediaBorder" BorderBrush="Blue" BorderThickness="10" HorizontalAlignment="Left" Height="399" Margin="10,10,0,0" VerticalAlignment="Top" Width="452"/>
+        <Button Content="Stop" HorizontalAlignment="Left" VerticalAlignment="Top" Width="74" Margin="500,342,0,0" Click="StopVideo"/>
+        <Button Content="Start" HorizontalAlignment="Left" VerticalAlignment="Top" Width="74" Margin="595,342,0,0" Click="StartVideo"/>
+    </Grid>
+</Window>

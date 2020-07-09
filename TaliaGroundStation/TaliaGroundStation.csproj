@@ -35,12 +35,43 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BingMapsRESTToolkit, Version=1.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BingMapsRESTToolkit.1.1.4\lib\net45\BingMapsRESTToolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
+    </Reference>
+    <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Expression.Blend, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=x86" />
+    <Reference Include="Microsoft.Expression.DesignHost, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=x86" />
+    <Reference Include="Microsoft.Expression.Encoder, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=x86">
+      <HintPath>..\packages\Microsoft.Expression.Encoder.4.0.4276.3\lib\net45\Microsoft.Expression.Encoder.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Expression.Framework, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=x86" />
+    <Reference Include="Microsoft.Expression.Project, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=x86" />
+    <Reference Include="Microsoft.Expression.Prototyping.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="microsoft.expression.prototyping.runtime, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="microsoft.expression.sketchflow, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=x86" />
+    <Reference Include="Microsoft.Expression.SketchFlowShared, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=x86" />
     <Reference Include="microsoft.expression.utility, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=x86" />
+    <Reference Include="Microsoft.Maps.MapControl.WPF">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Bing Maps WPF Control\V1\Libraries\Microsoft.Maps.MapControl.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Word, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -51,8 +82,14 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="Toolkit.WPF, Version=1.0.5752.30721, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Toolkit.WPF.1.0.5752.30721\lib\net40\Toolkit.WPF.dll</HintPath>
+    </Reference>
     <Reference Include="UIAutomationProvider" />
     <Reference Include="UIAutomationTypes" />
+    <Reference Include="WebcamControl, Version=3.3.1.0, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\packages\WpfWebcamControl.3.3.1\lib\WebcamControl.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -62,19 +99,57 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="GaugeViewModel.cs" />
-    <Compile Include="TemperatureGauge.xaml.cs">
-      <DependentUpon>TemperatureGauge.xaml</DependentUpon>
+    <Compile Include="LiveVideo.xaml.cs">
+      <DependentUpon>LiveVideo.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SpeedGauge.xaml.cs">
-      <DependentUpon>SpeedGauge.xaml</DependentUpon>
+    <Compile Include="MapControl.xaml.cs">
+      <DependentUpon>MapControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PressureGauge.xaml.cs">
+    <Compile Include="Pressure_Temperature_Graph.xaml.cs">
+      <DependentUpon>Pressure_Temperature_Graph.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pitch_Roll_Yaw_Graph.xaml.cs">
+      <DependentUpon>Pitch_Roll_Yaw_Graph.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Simulation.xaml.cs">
+      <DependentUpon>Simulation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TelemetryTable.xaml.cs">
+      <DependentUpon>TelemetryTable.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TransmitVideo.xaml.cs">
+      <DependentUpon>TransmitVideo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\GaugeViewModel.cs" />
+    <Compile Include="Login.xaml.cs">
+      <DependentUpon>Login.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PressureGauge.xaml.cs">
       <DependentUpon>PressureGauge.xaml</DependentUpon>
     </Compile>
-    <Compile Include="VoltGauge.xaml.cs">
+    <Compile Include="QuestionDialog.xaml.cs">
+      <DependentUpon>QuestionDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\SpeedGauge.xaml.cs">
+      <DependentUpon>SpeedGauge.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\TemperatureGauge.xaml.cs">
+      <DependentUpon>TemperatureGauge.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\VoltGauge.xaml.cs">
       <DependentUpon>VoltGauge.xaml</DependentUpon>
     </Compile>
+    <Compile Include="InputDialog.xaml.cs">
+      <DependentUpon>InputDialog.xaml</DependentUpon>
+    </Compile>
+    <Page Include="LiveVideo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Login.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -87,19 +162,51 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="TemperatureGauge.xaml">
+    <Page Include="MapControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pitch_Roll_Yaw_Graph.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Simulation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TelemetryTable.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TransmitVideo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\PressureGauge.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="SpeedGauge.xaml">
+    <Page Include="QuestionDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pressure_Temperature_Graph.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\SpeedGauge.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="PressureGauge.xaml">
+    <Page Include="UserControls\TemperatureGauge.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="VoltGauge.xaml">
+    <Page Include="UserControls\VoltGauge.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="InputDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -122,6 +229,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -129,6 +237,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="TaliaLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Dialogs\" />
+    <Folder Include="Frames\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

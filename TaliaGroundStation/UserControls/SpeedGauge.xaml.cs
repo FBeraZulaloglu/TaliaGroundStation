@@ -22,7 +22,11 @@ namespace TaliaGroundStation
     {
         public SpeedGauge()
         {
+            
+                this.DataContext = new GaugeViewModel();
+            
             InitializeComponent();
+            
         }
     }
 }

@@ -9,6 +9,9 @@ namespace TaliaGroundStation
 {
     public class GaugeViewModel : INotifyPropertyChanged
     {
+        int startPoint = 0;
+        int stopPoint = 0;
+
         public event PropertyChangedEventHandler PropertyChanged; // event handler oluştur
         private void NotifyPropertyChanged(string info)
         {
@@ -18,21 +21,25 @@ namespace TaliaGroundStation
             }
         }
 
+        public GaugeViewModel(int start, int stop)
+        {
+            this.stopPoint = stop;
+            this.startPoint = start;
+            Value = 0;
+            Angle = (Value * (178 / (stop - start))) - 89;
+        }
+
         public GaugeViewModel()
         {
+            
             Value = 0;
-            Angle = -85;
-        }
-
-        public GaugeViewModel(int value)
-        {
-            Value = value;
-            Angle = value - 85;
+            Angle = Value  - 89;
         }
 
 
-        int _angle;
-        public int Angle
+
+        double _angle;
+        public double Angle
         {
             get
             {
@@ -46,8 +53,8 @@ namespace TaliaGroundStation
 
         }
 
-        int _value;
-        public int Value
+        double _value;
+        public double Value
         {
             get
             {
@@ -55,10 +62,10 @@ namespace TaliaGroundStation
             }
             set
             {
-                if (value > 0 && value < 170)
+                if (value >= 0 && value <= 178)
                 {
                     _value = value;
-                    Angle = value - 87;
+                    Angle = (Value * (178.4 / (stopPoint - startPoint ))) - 89.7;
                     NotifyPropertyChanged("Value");
                 }
 

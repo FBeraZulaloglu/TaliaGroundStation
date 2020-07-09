@@ -42,6 +42,18 @@ namespace TaliaGroundStation
         {
             //buzzerın çalışmkası için komut gönder
             //send command to start buzzer
+            MessageBox.Show("Buzzer Çalıştırıldı");
+        }
+
+        private void TelemetryTable_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void videoSending(object sender, RoutedEventArgs e)
+        {
+            TransmitVideo tVideo = new TransmitVideo();
+            tVideo.Show();
         }
     }
 }

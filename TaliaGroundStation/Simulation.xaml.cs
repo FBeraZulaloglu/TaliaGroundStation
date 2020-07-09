@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace TaliaGroundStation
 {
     /// <summary>
-    /// Interaction logic for SpeedGauge.xaml
+    /// Interaction logic for Simulation.xaml
     /// </summary>
-    public partial class SpeedGauge : UserControl
+    public partial class Simulation : UserControl
     {
-        public SpeedGauge()
+        public Simulation()
         {
             InitializeComponent();
         }

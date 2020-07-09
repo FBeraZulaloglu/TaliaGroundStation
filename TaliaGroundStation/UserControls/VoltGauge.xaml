@@ -1,0 +1,214 @@
+﻿<UserControl x:Class="TaliaGroundStation.VoltGauge"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TaliaGroundStation"
+             mc:Ignorable="d" 
+             d:DesignHeight="126" d:DesignWidth="217">
+    <Grid Background="Black">
+
+        <Border x:Name="Layer1" HorizontalAlignment ="Center" VerticalAlignment="Bottom" Width="199" Height="112" 
+                BorderBrush="#B92424" BorderThickness="1 2 0 0" CornerRadius="600 600 0 0" Margin="11,0,7,0" >
+            <Border.Effect>
+                <DropShadowEffect Color="#5B5858" ShadowDepth="6" BlurRadius="5" />
+            </Border.Effect>
+        </Border>
+        <Border x:Name="Layer2" HorizontalAlignment ="Center" VerticalAlignment="Bottom" Width="194" Height="112" 
+                BorderBrush="#B92424" BorderThickness="0 2 0 0" CornerRadius="600 600 0 0" Background="#1D1B1B" Margin="13,0,10,0" >
+            <Border.Effect>
+                <DropShadowEffect Color="#FF252323" BlurRadius="10" ShadowDepth="2" />
+            </Border.Effect>
+        </Border>
+        <TextBox x:Name="Volt" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="94,0,89,48" 
+                   FontSize="80" FontFamily="Agency FB" Foreground="Black" Text="{Binding Path=Value,Mode=TwoWay}" Background="{x:Null}" BorderBrush="#FF191A1B" BorderThickness="1" Width="34" FontWeight="Bold" TextAlignment="Center" Height="18">
+
+            <TextBox.Effect>
+                <DropShadowEffect BlurRadius="20" ShadowDepth="10"/>
+            </TextBox.Effect>
+        </TextBox>
+
+        <TextBlock  HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="100,0,94,14" 
+                   FontSize="12" FontFamily="Agency FB" Foreground="Black" Text="Volt" Height="13" Width="23" TextAlignment="Center">
+            <TextBlock.Effect>
+                <DropShadowEffect Color="#201E1E" BlurRadius="20" ShadowDepth="10"/>
+            </TextBlock.Effect>
+        </TextBlock>
+        <Border x:Name="Cursor"  Width="5" Background="Black" RenderTransformOrigin="0.5 2 "
+                Height="49" Margin="109,0,103,48" VerticalAlignment="Bottom" HorizontalAlignment="Center"
+                CornerRadius="100 100 0 0" >
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="0.486"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Border.RenderTransform>
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="30" Color="Gray" ShadowDepth="0"/>
+            </Border.Effect>
+        </Border>
+        <Border BorderThickness="5" BorderBrush="#0D0C0C" Background="#201E1E" RenderTransformOrigin="0.5,0.5" Margin="27,65,188,51">
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-63.902"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Border.RenderTransform>
+
+        </Border>
+        <Border Height="10" BorderThickness="5" BorderBrush="#0D0C0C" Background="#201E1E" RenderTransformOrigin="0.5,0.5" Margin="56,32,159,84">
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-38.987"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Border.RenderTransform>
+
+        </Border>
+        <Border Height="10" BorderThickness="5" BorderBrush="#0D0C0C" Background="#201E1E" RenderTransformOrigin="0.5,0.5" Margin="13,110,202,6">
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-89.903"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Border.RenderTransform>
+
+        </Border>
+        <Border Height="10" BorderThickness="5" BorderBrush="#0D0C0C" Background="#201E1E" RenderTransformOrigin="0.5,0.5" Margin="160,37,55,79">
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="41.252"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Border.RenderTransform>
+
+        </Border>
+        <Border Height="10" BorderThickness="5" CornerRadius="0 0 0 0" BorderBrush="#0D0C0C" Background="#201E1E" RenderTransformOrigin="0.5,0.5" Margin="111,16,104,100">
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-0.39"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Border.RenderTransform>
+
+        </Border>
+        <Border BorderThickness="5" BorderBrush="#0D0C0C" Background="#201E1E" RenderTransformOrigin="0.5,0.5" Margin="185,69,30,47">
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="61.921"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Border.RenderTransform>
+
+        </Border>
+        <Border Height="10" BorderThickness="5" BorderBrush="#0D0C0C" Background="#201E1E" RenderTransformOrigin="0.5,0.5" Margin="197,112,18,4">
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-90.534"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Border.RenderTransform>
+
+        </Border>
+        <Border BorderThickness="5" BorderBrush="#0D0C0C" Background="#201E1E" RenderTransformOrigin="0.5,0.5" Margin="19,83,196,33">
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-74.785"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Border.RenderTransform>
+
+        </Border>
+        <Border BorderThickness="5" BorderBrush="#0D0C0C" Background="#201E1E" RenderTransformOrigin="0.5,0.5" Margin="194,94,21,22">
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="77.63"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Border.RenderTransform>
+
+        </Border>
+        <Border Height="10" BorderThickness="5" BorderBrush="#0D0C0C" Background="#201E1E" RenderTransformOrigin="0.5,0.5" Margin="38,49,177,67">
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-53.248"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Border.RenderTransform>
+
+        </Border>
+        <Border Height="10" BorderThickness="5" BorderBrush="#0D0C0C" Background="#201E1E" RenderTransformOrigin="0.5,0.5" Margin="74,22,141,94">
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-25.59"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Border.RenderTransform>
+
+        </Border>
+        <Border Height="10" BorderThickness="5" BorderBrush="#0D0C0C" Background="#201E1E" RenderTransformOrigin="0.5,0.5" Margin="138,23,77,93">
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="22.724"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Border.RenderTransform>
+
+        </Border>
+        <Border Height="10" BorderThickness="5" BorderBrush="#0D0C0C" Background="#201E1E" RenderTransformOrigin="0.5,0.5" Margin="174,52,41,64">
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="52.736"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Border.RenderTransform>
+
+        </Border>
+        <TextBlock x:Name="start"  HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="21,0,186,0" 
+            FontSize="12" FontFamily="Agency FB" Foreground="Black" Text="0" Height="13" Width="10" TextAlignment="Center">
+            <TextBlock.Effect>
+                <DropShadowEffect Color="#201E1E" BlurRadius="20" ShadowDepth="10"/>
+            </TextBlock.Effect>
+        </TextBlock>
+        <TextBlock x:Name="end" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="184,0,23,0" 
+            FontSize="12" FontFamily="Agency FB" Foreground="Black" Text="20" Height="13" Width="10" TextAlignment="Center">
+            <TextBlock.Effect>
+                <DropShadowEffect Color="#201E1E" BlurRadius="20" ShadowDepth="10"/>
+            </TextBlock.Effect>
+        </TextBlock>
+        <TextBlock  HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="107,0,100,88" 
+            FontSize="12" FontFamily="Agency FB" Foreground="Black" Text="10" Height="14" Width="10" TextAlignment="Center">
+            <TextBlock.Effect>
+                <DropShadowEffect Color="#201E1E" BlurRadius="20" ShadowDepth="10"/>
+            </TextBlock.Effect>
+        </TextBlock>
+    </Grid>
+</UserControl>
