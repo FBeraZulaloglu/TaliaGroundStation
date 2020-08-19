@@ -34,7 +34,7 @@
                 <DropShadowEffect Color="#201E1E" BlurRadius="20" ShadowDepth="10"/>
             </TextBlock.Effect>
         </TextBlock>
-        <Border x:Name="Cursor"  Width="5" Background="Black" RenderTransformOrigin="0.5 2 "
+        <Border x:Name="volt_cursor"  Width="5" Background="Black" RenderTransformOrigin="0.5 2 "
                 Height="49" Margin="109,0,103,48" VerticalAlignment="Bottom" HorizontalAlignment="Center"
                 CornerRadius="100 100 0 0" >
             <Border.RenderTransform>

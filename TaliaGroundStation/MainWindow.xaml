@@ -3,17 +3,22 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:gmaps="clr-namespace:GMap.NET.WindowsPresentation;assembly=GMap.NET.WindowsPresentation"
+    xmlns:aforge ="clr-namespace:AForge.Controls;assembly=AForge.Controls"
+    xmlns:wfi ="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
     xmlns:user="clr-namespace:TaliaGroundStation.UserControls"
     xmlns:Controls="clr-namespace:Microsoft.Expression.Utility.Controls;assembly=Microsoft.Expression.Utility"
     xmlns:local="clr-namespace:TaliaGroundStation"
     
     x:Class="TaliaGroundStation.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" MinHeight="400" MinWidth="600" WindowStartupLocation="CenterScreen" WindowState="Maximized" Background="#FF444242">
+        Title="MainWindow" MinHeight="400" MinWidth="600" Height="1080" Width="1920" WindowStartupLocation="CenterScreen" WindowState="Maximized" Background="#FF444242" Loaded="WindowLoaded">
     <Grid Margin="0,0,0,0">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="2*"/>
@@ -24,28 +29,72 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+
         <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0"
                    Source="TaliaLogo.png"/>
-        <TextBlock Grid.Row="1" FontSize="20" HorizontalAlignment="Stretch" VerticalAlignment="Top">Video Aktarım Bilgisi :</TextBlock>
-        <TextBlock Grid.Row="1" FontSize="20" HorizontalAlignment="Stretch" VerticalAlignment="Center" >Zaman :</TextBlock>
-        <TextBlock Grid.Row="1" FontSize="20" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" >DURUM : </TextBlock>
-
-        <user:Pitch_Roll_Yaw_Graph Grid.Column="1" Margin="5,0,0,0" Grid.Row="2"  />
-        <user:Pressure_Temperature_Graph Grid.Column="1" Grid.Row="3"  />
-        <local:TelemetryTable Grid.Column="1" Height="266" Grid.RowSpan="3" VerticalAlignment="Top" Width="Auto" Grid.ColumnSpan="2" Margin="0,-9,0,0" Loaded="TelemetryTable_Loaded"/>
-        <local:Simulation Grid.Column="3"  Grid.Row="1"  Grid.RowSpan="2"/>
-        <local:MapControl Grid.Column="3" Grid.Row="0" HorizontalAlignment="Stretch"/>
-        <local:LiveVideo Grid.Column="3" Grid.Row="3" VerticalAlignment="Stretch"/>
-
-        
-        <!--Control Buttons-->
+        <!--USER CONTROLS BEGIN-->
+        <StackPanel x:Name="server" Orientation="Vertical" Margin="0 10 0 0"  Grid.Row="1" >
+            <TextBlock x:Name="ipAdress" Margin="0 5 0 0" Foreground="#E8A90D"></TextBlock>
+            <TextBlock x:Name="port" Margin="0 10 0 0" Foreground="#E8A90D"></TextBlock>
+            <Button Click="Start_Server" Margin="0 10 0 0" Foreground="#0F49D8" Background="#050978" FontSize="20">Start Server</Button>
+            <Button Click="Stop_Server" Margin="0 10 0 0" FontSize="20" Background="#050978"  Foreground="#0F49D8">Stop Server</Button>
+            <Button Click="Refresh_Server" Margin="0 10 0 0" FontSize="20" Background="#050978"  Foreground="#0F49D8">Refresh Server</Button>
+            <TextBlock x:Name="connection" Margin="0 30 0 0" Foreground="#E8A90D"></TextBlock>
+        </StackPanel>
+           
+        <!--Order Buttons-->
         <StackPanel x:Name="ControlButtons" Orientation="Vertical" Margin="0 10 0 0"  Grid.Row="2" >
-            <TextBlock Text="Control Buttons" TextAlignment="Center"/>
+            <TextBlock FontSize="26" TextAlignment="Center">Orders</TextBlock>
             <Button x:Name="openLock" Content="Ayrılma &#xD;&#xA;Mekanizmasını &#xD;&#xA;Aç" Click="OpenLock" Margin="0 10 0 0" FontSize="10" />
-            <Button x:Name="openBuzzer" Content="Buzzerı &#xD;&#xA;Çalıştır" Click="OpenBuzzer" Margin="0 10 0 0" />
+            <Button x:Name="openBuzzer" Content="Buzzer Aç" Click="OpenBuzzer" Margin="0 10 0 0" />
+            <Button x:Name="TransmitVideo"  Click="videoSending" Margin="0,10,0,0" FontSize="15" Content="SEND VİDEO"/>
         </StackPanel>
 
-        <Button x:Name="TransmitVideo" Grid.Row="3" Click="videoSending">SEND VİDEO</Button>
+        <!--Yükseklik için bir graph eklenmelidir.-->
+        <user:Pitch_Roll_Yaw_Graph Grid.Column="2" Grid.Row="3"/>
+        <user:Pressure_Temperature_Graph Grid.Column="1" Grid.Row="3"/>
+        <user:Pressure_Temperature_Graph Grid.Column="1" Grid.Row="2"/>
+        <user:Pressure_Temperature_Graph Grid.Column="2" Grid.Row="2"/>
+        <local:Simulation Grid.Column="3"  Grid.Row="2" Grid.RowSpan="2"></local:Simulation>
+        <!--USER CONTROLS FINISH-->
+
+        
+
+        
+        <!--Speed Gauge and Altitude Gauge is important-->
+        <Border BorderThickness="4" BorderBrush="MediumVioletRed"  Grid.Column="4" Grid.RowSpan="2" Grid.ColumnSpan="2" MinHeight="200" MinWidth="300"  >
+            <gmaps:GMapControl x:Name="mapView" Loaded="mapLoaded" />
+        </Border>
+
+        <Border BorderBrush="PaleVioletRed" BorderThickness="4" Grid.Column="4" Grid.Row="2" Grid.RowSpan="2" Grid.ColumnSpan="2">
+            <wfi:WindowsFormsHost >
+                <aforge:VideoSourcePlayer x:Name="videoPlayer" Dock="Fill"/>
+            </wfi:WindowsFormsHost>
+        </Border>
+
+        <Border  Grid.Column="1" Grid.ColumnSpan="3" Grid.RowSpan="2" BorderBrush="AliceBlue" BorderThickness="4" MinHeight="200" MinWidth="400">
+            <DataGrid x:Name="telemetry_table" 
+                  AutoGenerateColumns="False" IsReadOnly="True" HorizontalScrollBarVisibility="Visible"
+                  >
+                <DataGrid.Columns>
+                    <DataGridTextColumn x:Name="paketNo" Header="Paket No" Width="70" Binding="{Binding _paketNo}" />
+                    <DataGridTextColumn x:Name="zaman" Header="Gönderilme Zamanı" Binding="{Binding _time}" />
+                    <DataGridTextColumn x:Name="basinc" Header="    Basınç" Width="70" Binding="{Binding _pressure}" />
+                    <DataGridTextColumn x:Name="yükseklik" Header=" Yükseklik" Width="80" Binding="{Binding _height}" />
+                    <DataGridTextColumn x:Name="hiz" Header="    Hız" Width="60" Binding="{Binding _velocity}" />
+                    <DataGridTextColumn x:Name="volt" Header="     Volt" Width="70" Binding="{Binding _volt}" />
+                    <DataGridTextColumn x:Name="altitude" Header="    Altitude" Width="90" Binding="{Binding _altitude}" />
+                    <DataGridTextColumn x:Name="isVideoSent" Header="Video Gönderildi" Binding="{Binding _isVideoSent}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+    
+        <StackPanel Grid.Row="4">
+            <TextBlock>Harita Long-Lat</TextBlock>
+            <TextBox x:Name="gps_lat" Margin="0 20 0 0"></TextBox>
+            <TextBox x:Name="gps_long" Margin="0 20 0 0"></TextBox>
+            <Button Margin="0 20 0 0" Click="Button_Click">Load Map</Button>
+        </StackPanel>
 
     </Grid>
 </Window>

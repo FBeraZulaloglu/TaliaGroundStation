@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TaliaGroundStation"
              mc:Ignorable="d" 
-             d:DesignHeight="126" d:DesignWidth="217">
+             d:DesignHeight="300" d:DesignWidth="400">
+
     <Grid Background="Black">
 
         <Border x:Name="Layer1" HorizontalAlignment ="Center" VerticalAlignment="Bottom" Width="198" Height="109" 
@@ -16,19 +17,19 @@
         </Border>
 
         <Border x:Name="Layer2" 
-                BorderBrush="#B92424" BorderThickness="0 2 0 0" CornerRadius="600 600 0 0" Background="#1D1B1B" Margin="0,17,0,0" >
+                BorderBrush="#B92424" BorderThickness="0 2 0 0" CornerRadius="600 600 0 0" Background="#1D1B1B" Height="209" VerticalAlignment="Bottom" >
             <Border.Effect>
                 <DropShadowEffect Color="#FF252323" BlurRadius="10" ShadowDepth="2" />
             </Border.Effect>
         </Border>
 
-        <Border x:Name="Cursor" 
-                BorderBrush="#B92424" BorderThickness="0 2 0 0" CornerRadius="20 20 0 0" Margin="110,22,0,0" RenderTransformOrigin="2,2" Height="47" VerticalAlignment="Top" HorizontalAlignment="Left" Width="3" >
+        <Border x:Name="pressure_cursor" 
+                BorderBrush="#B92424" BorderThickness="0 2 0 0" CornerRadius="20 20 0 0" Margin="61,266,256,0" RenderTransformOrigin="2,2" Height="5" VerticalAlignment="Top" >
             <Border.RenderTransform>
                 <TransformGroup>
-                    <ScaleTransform/>
+                    <ScaleTransform ScaleY="-1"/>
                     <SkewTransform/>
-                    <RotateTransform Angle="-87.416"/>
+                    <RotateTransform Angle="-0.556"/>
                     <TranslateTransform/>
                 </TransformGroup>
             </Border.RenderTransform>
@@ -43,7 +44,7 @@
             </Border.Effect>
         </Border>
 
-        <TextBox x:Name="Pressure" Margin="90,0,90,32" HorizontalAlignment="Stretch"
+        <TextBox x:Name="Pressure" Margin="169,0,184,32" HorizontalAlignment="Stretch"
                    FontSize="80" FontFamily="Agency FB" Foreground="Black" Text="{Binding Path=Value,Mode=TwoWay}" Background="{x:Null}" BorderBrush="#FF191A1B" BorderThickness="1" FontWeight="Bold" TextAlignment="Center" Height="16" VerticalAlignment="Bottom">
 
             <TextBox.Effect>
@@ -51,25 +52,33 @@
             </TextBox.Effect>
         </TextBox>
 
-        <TextBlock Text="kPa" Margin="96,99,97,14" 
-                   FontSize="12" FontFamily="Agency FB" Foreground="Black" TextAlignment="Center">
+        <TextBlock Text="kPa" Margin="194,268,192,14" HorizontalAlignment="Center"
+                   FontSize="12" FontFamily="Agency FB" Foreground="Black" TextAlignment="Center" Width="14">
             <TextBlock.Effect>
                 <DropShadowEffect Color="#201E1E" BlurRadius="20" ShadowDepth="10"/>
             </TextBlock.Effect>
         </TextBlock>
-        <TextBlock x:Name="start" Text="10" Margin="1,112,196,0" 
-            FontSize="12" FontFamily="Agency FB" Foreground="Black" TextAlignment="Center">
+        <TextBlock x:Name="start" Text="10" Margin="6,272,362,0" 
+            FontSize="12" FontFamily="Agency FB" Foreground="Black" TextAlignment="Center" Height="25" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5">
+            <TextBlock.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleY="-1"/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </TextBlock.RenderTransform>
             <TextBlock.Effect>
                 <DropShadowEffect Color="#201E1E" BlurRadius="20" ShadowDepth="10"/>
             </TextBlock.Effect>
         </TextBlock>
-        <TextBlock x:Name="end" Margin="185,112,2,0" 
+        <TextBlock x:Name="end" Margin="185,91,184,192" 
             FontSize="12" FontFamily="Agency FB" Foreground="Black" Text="101" TextAlignment="Center">
             <TextBlock.Effect>
                 <DropShadowEffect Color="#201E1E" BlurRadius="20" ShadowDepth="10"/>
             </TextBlock.Effect>
         </TextBlock>
-        <TextBlock Text="15" Margin="106,20,101,92" 
+        <TextBlock Text="15" Margin="364,276,10,6" 
             FontSize="12" FontFamily="Agency FB" Foreground="Black" TextAlignment="Center" RenderTransformOrigin="0.567,0.714">
             <TextBlock.Effect>
                 <DropShadowEffect Color="#201E1E" BlurRadius="20" ShadowDepth="10"/>

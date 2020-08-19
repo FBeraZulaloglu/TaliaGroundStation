@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
 using Microsoft.Maps.MapControl.WPF;
-
 
 namespace TaliaGroundStation
 {
     /// <summary>
-    /// Interaction logic for MapControl.xaml
+    /// Interaction logic for FullSizeMap.xaml
     /// </summary>
-    public partial class MapControl : UserControl
+    public partial class FullSizeMap : Window
     {
         MapPolyline route;
         Pushpin marker, marker1;
-        public MapControl()
+        public FullSizeMap()
         {
             InitializeComponent();
             myMap.Focus();// + ile yakınlaşı r- ile ise uzaklasır

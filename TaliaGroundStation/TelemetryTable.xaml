@@ -5,9 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TaliaGroundStation"
              xmlns:Prototyping="clr-namespace:Microsoft.Expression.Prototyping;assembly=Microsoft.Expression.SketchFlow" xmlns:FlowGraph="clr-namespace:Microsoft.Expression.Prototyping.FlowGraph;assembly=Microsoft.Expression.Prototyping.Runtime" x:Class="TaliaGroundStation.TelemetryTable"
-             mc:Ignorable="d" Height="482" Width="838">
+             mc:Ignorable="d"
+             d:DesignHeight="126" d:DesignWidth="429">
     <Grid>
-        <DataGrid x:Name="telemetry_table" HorizontalAlignment="Left" Height="472" Margin="0,10,0,0" VerticalAlignment="Top" Width="838"/>
+        <Border BorderThickness="3" BorderBrush="PaleVioletRed">
+            <DataGrid x:Name="telemetry_table" Margin="0,0,0,0"/>
+        </Border>
 
     </Grid>
 </UserControl>
+    

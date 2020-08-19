@@ -25,6 +25,13 @@ namespace TaliaGroundStation
             //ConfigurSerialPort();
 
             //GetDatas();
+            for (int i = 0; i < 10; i++)
+            {
+                allData.Add(new Telemetry() { paketNo = i.ToString(), saat = (string)"17:40:30", basınc = (string)"101.2", sıcaklık = (string)"31" });
+                telemetry_table.ItemsSource = null;
+                telemetry_table.ItemsSource = allData;
+
+            }
 
         }
 

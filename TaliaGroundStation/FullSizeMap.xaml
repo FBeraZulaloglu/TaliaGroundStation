@@ -1,20 +1,17 @@
-﻿<UserControl x:Class="TaliaGroundStation.MapControl"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:m="clr-namespace:Microsoft.Maps.MapControl.WPF;assembly=Microsoft.Maps.MapControl.WPF"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:TaliaGroundStation"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="400">
+﻿<Window x:Class="TaliaGroundStation.FullSizeMap"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:m="clr-namespace:Microsoft.Maps.MapControl.WPF;assembly=Microsoft.Maps.MapControl.WPF"
+        xmlns:local="clr-namespace:TaliaGroundStation"
+        mc:Ignorable="d"
+        Title="FullSizeMap" Height="450" Width="800">
     <Grid>
-        <Grid.ColumnDefinitions>
-
-        </Grid.ColumnDefinitions>
         <m:Map x:Name="myMap" Focusable="False" CredentialsProvider="5TuKkKjN3tJXTIHPItZ1~ojBDhSADCTlnxWvrZU5oAQ~Ang3LK6Prpt9v0qz7cvNP1Os4PhPmESxfJLY8ivRLdiAIxEvjX13daIpE-qdN0Ia" 
                Mode="AerialWithLabels" AnimationLevel="Full"
             Center="{Binding ElementName=Satelite_Lat, Path=Text}" RenderTransformOrigin="0.569,0.524" Heading="0" ZoomLevel="18">
-            <m:Pushpin x:Name="myMarker" Template="{StaticResource RedPushPinTemplate}" Height="Auto" Margin="147,90,339,250" Width="Auto">
+            <m:Pushpin x:Name="myMarker" Template="{StaticResource RedPushPinTemplate}" Height="Auto" Margin="321,122,366,200" Width="Auto">
 
             </m:Pushpin>
         </m:Map>
@@ -22,8 +19,8 @@
         <TextBox x:Name="Satelite_Lat" HorizontalAlignment="Left" Height="23" Margin="1015,25,-335,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
         <TextBox x:Name="My_Lat" HorizontalAlignment="Left" Height="23" Margin="1015,124,-335,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
         <TextBox x:Name="My_Lng" HorizontalAlignment="Left" Height="23" Margin="1015,152,-335,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Label Content="Uydu Konum" HorizontalAlignment="Left" Margin="619,88,-339,0" VerticalAlignment="Top" Width="120"/>
+        <Label Content="Uydu Konum" HorizontalAlignment="Left" Margin="603,88,-323,0" VerticalAlignment="Top" Width="120"/>
         <Label Content="Yer İstasyonu Konum&#xD;&#xA;" HorizontalAlignment="Left" Margin="603,106,-323,0" VerticalAlignment="Top" Width="120" Height="26" RenderTransformOrigin="0.45,-1.038"/>
         <Button Content="Load to Map" HorizontalAlignment="Left" Margin="1015,180,-295,0" VerticalAlignment="Top" Width="80" Height="31" Click="LoadToMap"/>
     </Grid>
-</UserControl>
+</Window>

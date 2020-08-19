@@ -2,20 +2,18 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TaliaGroundStation"
-             mc:Ignorable="d" Height="300" Width="400">
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="400">
+
     <Grid>
-        <TextBox x:Name="pitch_value"  HorizontalAlignment="Left" Height="21" Margin="969,47,-464,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="130" Background="#FFF9F9F9"/>
-        <TextBox x:Name="roll_value"  HorizontalAlignment="Left" Height="21" Margin="958,10,-453,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="130" Background="#FFF3F1F1"/>
-        <TextBox x:Name="yaw_value"  HorizontalAlignment="Left" Height="22" Margin="969,77,-464,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="130" Background="WhiteSmoke"/>
-        <TextBlock x:Name="pitch_label" HorizontalAlignment="Left" Margin="1107,47,-600,0" TextWrapping="Wrap" Text="       PITCH" VerticalAlignment="Top" Height="25" Width="128" Background="Black" Foreground="White" FontSize="20" FontWeight="Bold" Cursor=""/>
-        <TextBlock x:Name="roll_label" HorizontalAlignment="Left" Margin="1107,3,-600,0" TextWrapping="Wrap" Text="       ROLL" VerticalAlignment="Top" Height="28" Width="128" Foreground="#FFFBFBFB" Background="Black" FontSize="20" FontWeight="Bold" RenderTransformOrigin="0.489,1.283"/>
-        <TextBlock x:Name="yaw_label" HorizontalAlignment="Left" Margin="1107,77,-600,0" TextWrapping="Wrap" Text="        YAW" VerticalAlignment="Top" Height="26" Width="128" Background="Black" Foreground="#FFEEE5E5" FontSize="20" FontWeight="Bold" Cursor="Arrow"/>
+
         <!--<c:TrackballDecorator Margin="0,0,295,0">-->
-        <TextBlock FontStyle="Normal" FontSize="12" Foreground="Blue">Dönüş Sayısı</TextBlock>
-        <TextBox Margin="72,0,303,285" IsReadOnly="True"/>
-        <Viewport3D x:Name="tasiyici" ClipToBounds="True">
+        <TextBlock FontStyle="Normal" FontSize="24" Foreground="Black">Dönüş Sayısı</TextBlock>
+        <TextBox x:Name="donusCounter" Margin="144,3,188,0" IsReadOnly="True" Height="25" VerticalAlignment="Top"/>
+        <Viewport3D x:Name="tasiyici" ClipToBounds="True" Margin="0,36,70,0">
             <Viewport3D.Camera>
                 <PerspectiveCamera FieldOfView="45" FarPlaneDistance="1086.3961170979799" LookDirection="0,0,-402.105215988837" NearPlaneDistance="0.1" Position="1.11331176757815,90.4402301609515,400.57523056098" UpDirection="0,1,0"/>
             </Viewport3D.Camera>
@@ -872,5 +870,17 @@
             </ModelVisual3D>
         </Viewport3D>
         <!--</c:TrackballDecorator>-->
+
+        <ProgressBar x:Name="height" Minimum="0"  Maximum="700" MaxHeight="100" Value="500" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5" Foreground="Gray" Margin="199,135,-99,135" Height="30">
+            <ProgressBar.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-90.549"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </ProgressBar.RenderTransform>
+        </ProgressBar>
+        <TextBlock Text="{Binding ElementName=height,Path=Value,StringFormat={}{0:0}m}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="335,145,35,131" Height="24" Width="30" />
     </Grid>
 </UserControl>

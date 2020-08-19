@@ -18,12 +18,12 @@ namespace TaliaGroundStation
     /// <summary>
     /// Interaction logic for SpeedGauge.xaml
     /// </summary>
-    public partial class SpeedGauge : UserControl
+    public partial class TemperatureGauge : UserControl
     {
-        public SpeedGauge()
+        public TemperatureGauge()
         {
             
-                this.DataContext = new GaugeViewModel();
+            this.DataContext = new GaugeViewModel();
             
             InitializeComponent();
             
