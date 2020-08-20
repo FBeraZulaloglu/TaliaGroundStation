@@ -7,6 +7,8 @@
     xmlns:aforge ="clr-namespace:AForge.Controls;assembly=AForge.Controls"
     xmlns:wfi ="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
     xmlns:user="clr-namespace:TaliaGroundStation.UserControls"
+    xmlns:chart="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
+    xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
     xmlns:Controls="clr-namespace:Microsoft.Expression.Utility.Controls;assembly=Microsoft.Expression.Utility"
     xmlns:local="clr-namespace:TaliaGroundStation"
     
@@ -32,7 +34,7 @@
 
         <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0"
                    Source="TaliaLogo.png"/>
-        <!--USER CONTROLS BEGIN-->
+        <!--SERVER BEGIN-->
         <StackPanel x:Name="server" Orientation="Vertical" Margin="0 10 0 0"  Grid.Row="1" >
             <TextBlock x:Name="ipAdress" Margin="0 5 0 0" Foreground="#E8A90D"></TextBlock>
             <TextBlock x:Name="port" Margin="0 10 0 0" Foreground="#E8A90D"></TextBlock>
@@ -41,6 +43,7 @@
             <Button Click="Refresh_Server" Margin="0 10 0 0" FontSize="20" Background="#050978"  Foreground="#0F49D8">Refresh Server</Button>
             <TextBlock x:Name="connection" Margin="0 30 0 0" Foreground="#E8A90D"></TextBlock>
         </StackPanel>
+        
            
         <!--Order Buttons-->
         <StackPanel x:Name="ControlButtons" Orientation="Vertical" Margin="0 10 0 0"  Grid.Row="2" >
@@ -51,16 +54,9 @@
         </StackPanel>
 
         <!--Yükseklik için bir graph eklenmelidir.-->
-        <user:Pitch_Roll_Yaw_Graph Grid.Column="2" Grid.Row="3"/>
-        <user:Pressure_Temperature_Graph Grid.Column="1" Grid.Row="3"/>
-        <user:Pressure_Temperature_Graph Grid.Column="1" Grid.Row="2"/>
-        <user:Pressure_Temperature_Graph Grid.Column="2" Grid.Row="2"/>
-        <local:Simulation Grid.Column="3"  Grid.Row="2" Grid.RowSpan="2"></local:Simulation>
-        <!--USER CONTROLS FINISH-->
-
+        <local:Simulation x:Name="simulation" Grid.Column="3"  Grid.Row="2" Grid.RowSpan="2"></local:Simulation>
         
 
-        
         <!--Speed Gauge and Altitude Gauge is important-->
         <Border BorderThickness="4" BorderBrush="MediumVioletRed"  Grid.Column="4" Grid.RowSpan="2" Grid.ColumnSpan="2" MinHeight="200" MinWidth="300"  >
             <gmaps:GMapControl x:Name="mapView" Loaded="mapLoaded" />
@@ -95,6 +91,52 @@
             <TextBox x:Name="gps_long" Margin="0 20 0 0"></TextBox>
             <Button Margin="0 20 0 0" Click="Button_Click">Load Map</Button>
         </StackPanel>
+        
+        <WindowsFormsHost Grid.Column="1" Grid.Row="2">
+            <chart:Chart BackColor="White" >
+                <chart:Chart.Series >
+                    <chart:Series x:Name="volt_series1" ChartType="Spline"/>
+                </chart:Chart.Series>
+                <chart:Chart.ChartAreas>
+                    <chart:ChartArea/>
+                </chart:Chart.ChartAreas>
+            </chart:Chart>
+        </WindowsFormsHost>
+        
+        <WindowsFormsHost Grid.Column="1" Grid.Row="3">
+            <chart:Chart BackColor="White" >
+                <chart:Chart.Series >
+                    <chart:Series x:Name="volt_series2" ChartType="Spline"/>
+                </chart:Chart.Series>
+                <chart:Chart.ChartAreas>
+                    <chart:ChartArea/>
+                </chart:Chart.ChartAreas>
+            </chart:Chart>
+        </WindowsFormsHost>
+        
+        <WindowsFormsHost Grid.Column="2" Grid.Row="2">
+            <chart:Chart BackColor="White" >
+                <chart:Chart.Series >
+                    <chart:Series x:Name="volt_series3" ChartType="Spline"/>
+                </chart:Chart.Series>
+                <chart:Chart.ChartAreas>
+                    <chart:ChartArea/>
+                </chart:Chart.ChartAreas>
+            </chart:Chart>
+        </WindowsFormsHost>
+
+        <WindowsFormsHost Grid.Column="2" Grid.Row="3">
+            <chart:Chart BackColor="White" >
+                <chart:Chart.Series >
+                    <chart:Series x:Name="volt_series4" ChartType="Spline"/>
+                </chart:Chart.Series>
+                <chart:Chart.ChartAreas>
+                    <chart:ChartArea/>
+                </chart:Chart.ChartAreas>
+            </chart:Chart>
+        </WindowsFormsHost>
+
+
 
     </Grid>
 </Window>

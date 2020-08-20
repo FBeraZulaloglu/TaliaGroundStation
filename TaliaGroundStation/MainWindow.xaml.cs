@@ -19,6 +19,8 @@ using System.Windows.Shapes;
 using System.Windows.Media.Imaging;
 using System.Device.Location;
 using Microsoft.Win32;
+using System.Windows.Media;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace TaliaGroundStation
 {
@@ -27,6 +29,7 @@ namespace TaliaGroundStation
     /// </summary>
     public partial class MainWindow : Window
     {
+
         #region variables
         AVIWriter writer;
         string video_ip;
@@ -45,6 +48,12 @@ namespace TaliaGroundStation
         string[] data_array;
         #endregion
 
+        int height_delete = 100;
+        List<Double> volt_list;
+        double _volt = 2.1;
+        int paket = 0;
+        Series lineSeries;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -55,9 +64,24 @@ namespace TaliaGroundStation
             writer = new AVIWriter();
             writer.Open("TMUY2020_53417_VIDEO.avi", 800, 600);
             talia_csv = new StringBuilder();
+            talia_marker = new GMapMarker(new PointLatLng(42,21));
             telemetry_list = new List<Telemetry>();
+            volt_list = new List<Double>();
             videoPlayer.NewFrame += VideoPlayer_NewFrame;// works when new frame came
+            lineSeries = new Series("Volt");
+            lineSeries.ChartType = SeriesChartType.Spline;
+
+            for (int i = 0; i < 20; i++)
+            {
+                volt_series1.Points.Add(i,Math.Pow(i,6));
+                volt_series2.Points.Add(i,Math.Log(i*10));
+                volt_series3.Points.Add(i,i*i);
+                volt_series4.Points.Add(i,i-(Math.Log(i)));
+            }
+            
         }
+
+        
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
         {
@@ -82,7 +106,6 @@ namespace TaliaGroundStation
             //backgroundWorker1.DoWork += backgroundWorker1_DoWork;
             //backgroundWorker2.DoWork += backgroundWorker2_DoWork;
             //client = new TcpClient();
-
         }
 
         #region Commands
@@ -258,21 +281,54 @@ namespace TaliaGroundStation
         // getting value
         private void getTelemetryData(object sender, ElapsedEventArgs e)
         {
-            Console.WriteLine("Telemtry Data İs Coming ...");
-            var data = getTelemetry(telemetry_ip);
+            simulation.satelite_height = height_delete;
             
+            height_delete += 10;
+            
+            if(height_delete > 700)
+            {
+                height_delete = 0;
+            }
+            Console.WriteLine("Telemtry Data İs Coming ...");
+            
+            var data = getTelemetry(telemetry_ip);
+            ////////////////////////////////////////////NOT GRAPHLA ALAKALI
+            //volt_list.Add(_volt);
+            //_volt += 0.1;
+            //if(_volt > 12)
+            //{
+            //    _volt = 0;
+            //}
+            //Dispatcher.BeginInvoke((Action)(() => {
+            //    volt_series.Points.Clear();
+                
+            //    foreach (var item in volt_list)
+            //    {
+            //        volt_series.Points.AddXY(paket, item);
+            //    }
+            //    paket++;
+
+            //    if (volt_list.Count > 10)
+            //    {
+            //        volt_list.RemoveAt(0);
+            //    }
+            //}));
+           
+
             if (data != null)
             {
                 //split data and show on table
                 telemetry_list.Add(SetCurrentTelemetry(data));
                 talia_csv.Append(data);
                 File.WriteAllText("TMUY2020_53417_TLM.csv", talia_csv.ToString());
+                
 
                 Dispatcher.BeginInvoke((Action)(() => {
+                    //seriyi temizle
                     telemetry_table.ItemsSource = null;
                     telemetry_table.ItemsSource = telemetry_list;
                     mapView.Position = new PointLatLng(current_telemetry._gps_lat, current_telemetry._gps_long);
-                    talia_marker.Position = new PointLatLng(current_telemetry._gps_lat, current_telemetry._gps_long);
+                    addMarker();
                 }));
             }
             else
@@ -434,12 +490,12 @@ namespace TaliaGroundStation
             GMapProviders.GoogleMap.ApiKey = "AIzaSyBVGE_WK-JzMB3-i5ntWH1bXqJ0TIGCHK4";
             mapView.MapProvider = GMapProviders.GoogleMap;
             GMaps.Instance.Mode = AccessMode.ServerAndCache;
-            mapView.MaxZoom = 50;
+            mapView.MaxZoom = 70;
             mapView.MinZoom = 5;
             mapView.Zoom = 15;
             mapView.ShowCenter = false;
             mapView.DragButton = MouseButton.Left;
-            addMarker();
+            
 
         }
 
@@ -454,14 +510,14 @@ namespace TaliaGroundStation
                 {
                     talia_marker.Shape = new System.Windows.Controls.Image
                     {
-                        Width = 10,
-                        Height = 10,
+                        Width = 50,
+                        Height = 50,
                         Source = new BitmapImage(new Uri(@"C:\Users\faruk\source\repos\VLCMediaPlayerLive\VLCMediaPlayerLive\TaliaLogo.png"))
                     };
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
+                    MessageBox.Show("TALIA MARKER "+ex.Message);
                 }
             }
 

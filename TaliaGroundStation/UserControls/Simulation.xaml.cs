@@ -19,32 +19,49 @@ namespace TaliaGroundStation
     /// <summary>
     /// Interaction logic for Simulation.xaml
     /// </summary>
+    /// 
     public partial class Simulation : UserControl
     {
-       
+        public double roll;
+        public double pitch;
+        public double yaw;
+        public int satelite_height { get; set; }
+        public Status satelite_statu;
+        Timer myTimer;
         public Simulation()
         {
             InitializeComponent();
-            height.Value = 100;
             
-            /*Timer myTimer = new System.Timers.Timer();
+            myTimer = new System.Timers.Timer();
             myTimer.Elapsed += new ElapsedEventHandler(DisplayEvent);
             myTimer.Interval = 1000; // 1000 ms is one half second
-            myTimer.Start();*/
+            myTimer.Start();
 
-            
-            
         }
 
         public void DisplayEvent(object source, ElapsedEventArgs e)
         {
             // code here will run every half second
-            this.Dispatcher.Invoke((Action)(() =>
+            try
             {
-                //donusCounter.Text = anaEkran.server.GetPressure();
+                this.Dispatcher.Invoke((Action)(() =>
+                {
+                    //donusCounter.Text = anaEkran.server.GetPressure();
+                    height.Value = satelite_height;
+                }
+                ));
             }
-            ));
+            catch(Exception ex)
+            {
+                Console.WriteLine("Simulation Display event Error:  "+ex.Message);
+            }
+            
 
+        }
+
+        private void closing(object sender, ContextMenuEventArgs e)
+        {
+            myTimer.Stop();
         }
     }
 }
