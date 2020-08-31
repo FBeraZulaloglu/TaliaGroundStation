@@ -10,6 +10,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -22,11 +23,12 @@ namespace TaliaGroundStation
     /// 
     public partial class Simulation : UserControl
     {
-        public double roll;
-        public double pitch;
-        public double yaw;
+        public double roll { get; set; }
+        public double pitch { get; set; }
+        public double yaw { get; set; }
+        public int rollCount { get; set; }
         public int satelite_height { get; set; }
-        public Status satelite_statu;
+        
         Timer myTimer;
         public Simulation()
         {
@@ -36,6 +38,7 @@ namespace TaliaGroundStation
             myTimer.Elapsed += new ElapsedEventHandler(DisplayEvent);
             myTimer.Interval = 1000; // 1000 ms is one half second
             myTimer.Start();
+            //change();
 
         }
 
@@ -46,14 +49,16 @@ namespace TaliaGroundStation
             {
                 this.Dispatcher.Invoke((Action)(() =>
                 {
-                    //donusCounter.Text = anaEkran.server.GetPressure();
-                    height.Value = satelite_height;
+                    yaw_angle.Angle = roll;
+                    roll_angle.Angle = pitch;
+                    pitch_angle.Angle = yaw;
                 }
                 ));
             }
             catch(Exception ex)
             {
-                Console.WriteLine("Simulation Display event Error:  "+ex.Message);
+                Console.WriteLine("Simulation Display event Error:  " + ex.Message);
+                //Console.Error();
             }
             
 
@@ -62,6 +67,19 @@ namespace TaliaGroundStation
         private void closing(object sender, ContextMenuEventArgs e)
         {
             myTimer.Stop();
+        }
+
+        private void change()
+        {
+            DoubleAnimation animation = new DoubleAnimation();
+            animation.From = 0;
+            animation.To = 200;
+            animation.Duration = TimeSpan.FromSeconds(2);
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("HELLO");
         }
     }
 }

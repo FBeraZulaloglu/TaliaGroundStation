@@ -1,24 +1,26 @@
 ﻿<Window
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:gmaps="clr-namespace:GMap.NET.WindowsPresentation;assembly=GMap.NET.WindowsPresentation"
     xmlns:aforge ="clr-namespace:AForge.Controls;assembly=AForge.Controls"
     xmlns:wfi ="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
     xmlns:user="clr-namespace:TaliaGroundStation.UserControls"
     xmlns:chart="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
-    xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
-    xmlns:Controls="clr-namespace:Microsoft.Expression.Utility.Controls;assembly=Microsoft.Expression.Utility"
+    
+    
     xmlns:local="clr-namespace:TaliaGroundStation"
     
     x:Class="TaliaGroundStation.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" MinHeight="400" MinWidth="600" Height="1080" Width="1920" WindowStartupLocation="CenterScreen" WindowState="Maximized" Background="#FF444242" Loaded="WindowLoaded">
-    <Grid Margin="0,0,0,0">
+        Title="MainWindow" MinHeight="400" MinWidth="600" Height="1080" Width="1920" WindowStartupLocation="CenterScreen" WindowState="Maximized" Background="#FF444242" Loaded="WindowLoaded" Closed="ProgramClosed">
+
+
+    <Grid Margin="0,0,0,0" Visibility="Visible" IsHitTestVisible="True">
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="2*"/>
@@ -34,33 +36,27 @@
 
         <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0"
                    Source="TaliaLogo.png"/>
-        <!--SERVER BEGIN-->
-        <StackPanel x:Name="server" Orientation="Vertical" Margin="0 10 0 0"  Grid.Row="1" >
-            <TextBlock x:Name="ipAdress" Margin="0 5 0 0" Foreground="#E8A90D"></TextBlock>
-            <TextBlock x:Name="port" Margin="0 10 0 0" Foreground="#E8A90D"></TextBlock>
-            <Button Click="Start_Server" Margin="0 10 0 0" Foreground="#0F49D8" Background="#050978" FontSize="20">Start Server</Button>
-            <Button Click="Stop_Server" Margin="0 10 0 0" FontSize="20" Background="#050978"  Foreground="#0F49D8">Stop Server</Button>
-            <Button Click="Refresh_Server" Margin="0 10 0 0" FontSize="20" Background="#050978"  Foreground="#0F49D8">Refresh Server</Button>
-            <TextBlock x:Name="connection" Margin="0 30 0 0" Foreground="#E8A90D"></TextBlock>
-        </StackPanel>
-        
-           
+
         <!--Order Buttons-->
-        <StackPanel x:Name="ControlButtons" Orientation="Vertical" Margin="0 10 0 0"  Grid.Row="2" >
-            <TextBlock FontSize="26" TextAlignment="Center">Orders</TextBlock>
-            <Button x:Name="openLock" Content="Ayrılma &#xD;&#xA;Mekanizmasını &#xD;&#xA;Aç" Click="OpenLock" Margin="0 10 0 0" FontSize="10" />
-            <Button x:Name="openBuzzer" Content="Buzzer Aç" Click="OpenBuzzer" Margin="0 10 0 0" />
-            <Button x:Name="TransmitVideo"  Click="videoSending" Margin="0,10,0,0" FontSize="15" Content="SEND VİDEO"/>
+        <StackPanel x:Name="ControlButtons" Orientation="Vertical" Margin="0 0 0 0"  Grid.Row="3" >
+            <TextBlock FontSize="26" TextAlignment="Center" Height="36"><Run Text="Komutlar"/></TextBlock>
+            <Button x:Name="openLock"  Style="{StaticResource buttonStyle}"  Content="Manuel Ayrılma" Click="OpenLock" Margin="0 10 0 0" FontSize="14" Height="35" MouseDoubleClick="OpenLock" />
+            <Button x:Name="aktifInis" Style="{StaticResource buttonStyle}"    Content="Manuel Tahrik" Click="OpenAktif" Margin="0 10 0 0" FontSize="15" Height="35" />
+            <Button x:Name="openBuzzer" Style="{StaticResource buttonStyle}"    Content="Buzzer Aç" Click="OpenBuzzer" Margin="0 10 0 0"  FontSize="16" Height="36"  />
+            <Button x:Name="TransmitVideo" Style="{StaticResource buttonStyle}"   Click="videoSending" Margin="0,10,0,0" FontSize="15" Content="Video Giriş" Height="34"/>
+            <Button x:Name="Reset" Style="{StaticResource buttonStyle}" Click="resetEEPROM" Content="EEPROM SIFIRLA" Margin="0 10 0 0" Height="28"/>
         </StackPanel>
 
-        <!--Yükseklik için bir graph eklenmelidir.-->
-        <local:Simulation x:Name="simulation" Grid.Column="3"  Grid.Row="2" Grid.RowSpan="2"></local:Simulation>
-        
+        <!--<local:Simulation x:Name="simulation" Grid.Column="2" Margin="0 0 70 0"  Grid.Row="2" Grid.RowSpan="2" Grid.ColumnSpan="2"></local:Simulation>-->
 
-        <!--Speed Gauge and Altitude Gauge is important-->
         <Border BorderThickness="4" BorderBrush="MediumVioletRed"  Grid.Column="4" Grid.RowSpan="2" Grid.ColumnSpan="2" MinHeight="200" MinWidth="300"  >
-            <gmaps:GMapControl x:Name="mapView" Loaded="mapLoaded" />
+            <gmaps:GMapControl x:Name="mapView" Loaded="mapLoaded"/>
         </Border>
+
+        <TextBox x:Name="distance"  HorizontalAlignment="Right" FontSize="20" 
+                 VerticalAlignment="Top" Grid.Column="5" MinHeight="30" MinWidth="150" Margin="0 0 0 0" 
+                 Background="#FFC92A2A" Foreground="#FFE0BD1D" Height="0" Width="113">
+        </TextBox>
 
         <Border BorderBrush="PaleVioletRed" BorderThickness="4" Grid.Column="4" Grid.Row="2" Grid.RowSpan="2" Grid.ColumnSpan="2">
             <wfi:WindowsFormsHost >
@@ -68,75 +64,167 @@
             </wfi:WindowsFormsHost>
         </Border>
 
-        <Border  Grid.Column="1" Grid.ColumnSpan="3" Grid.RowSpan="2" BorderBrush="AliceBlue" BorderThickness="4" MinHeight="200" MinWidth="400">
-            <DataGrid x:Name="telemetry_table" 
-                  AutoGenerateColumns="False" IsReadOnly="True" HorizontalScrollBarVisibility="Visible"
-                  >
-                <DataGrid.Columns>
-                    <DataGridTextColumn x:Name="paketNo" Header="Paket No" Width="70" Binding="{Binding _paketNo}" />
-                    <DataGridTextColumn x:Name="zaman" Header="Gönderilme Zamanı" Binding="{Binding _time}" />
-                    <DataGridTextColumn x:Name="basinc" Header="    Basınç" Width="70" Binding="{Binding _pressure}" />
-                    <DataGridTextColumn x:Name="yükseklik" Header=" Yükseklik" Width="80" Binding="{Binding _height}" />
-                    <DataGridTextColumn x:Name="hiz" Header="    Hız" Width="60" Binding="{Binding _velocity}" />
-                    <DataGridTextColumn x:Name="volt" Header="     Volt" Width="70" Binding="{Binding _volt}" />
-                    <DataGridTextColumn x:Name="altitude" Header="    Altitude" Width="90" Binding="{Binding _altitude}" />
-                    <DataGridTextColumn x:Name="isVideoSent" Header="Video Gönderildi" Binding="{Binding _isVideoSent}" />
-                </DataGrid.Columns>
-            </DataGrid>
+
+        <Border  Grid.Column="1" Grid.ColumnSpan="3"  Grid.RowSpan="1" BorderBrush="AliceBlue" BorderThickness="4" MinHeight="200" MinWidth="400">
+            <ListView x:Name="telemetry_table" ItemsSource="{Binding Telemetry_list}">
+                <ListView.View>
+                    <GridView >
+                        <GridViewColumn x:Name="paketNo" Header="Paket No" Width="70" DisplayMemberBinding="{Binding PaketNo}"/>
+                        <GridViewColumn x:Name="zaman" Header="Zaman" Width="110" DisplayMemberBinding="{Binding Time}"/>
+                        <GridViewColumn x:Name="basinc" Header="Basınç" Width="80" DisplayMemberBinding="{Binding Pressure}"/>
+                        <GridViewColumn x:Name="yükseklik" Header=" Yükseklik" Width="80" DisplayMemberBinding="{Binding Height}"/>
+                        <GridViewColumn x:Name="sıcaklık" Header=" Sıcaklık" Width="60" DisplayMemberBinding="{Binding Temperature}"/>
+                        <GridViewColumn x:Name="hiz" Header="Hız" Width="62" DisplayMemberBinding="{Binding Velocity}"/>
+                        <GridViewColumn x:Name="volt" Header="Volt" Width="50" DisplayMemberBinding="{Binding Volt}"/>
+                        <GridViewColumn x:Name="altitude" Header="Altitude" Width="70" DisplayMemberBinding="{Binding Altitude}"/>
+                        <GridViewColumn x:Name="isVideoSent" Header="Video Gönderildi" Width="100" DisplayMemberBinding="{Binding IsVideoSent}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
         </Border>
-    
-        <StackPanel Grid.Row="4">
-            <TextBlock>Harita Long-Lat</TextBlock>
-            <TextBox x:Name="gps_lat" Margin="0 20 0 0"></TextBox>
-            <TextBox x:Name="gps_long" Margin="0 20 0 0"></TextBox>
-            <Button Margin="0 20 0 0" Click="Button_Click">Load Map</Button>
-        </StackPanel>
-        
-        <WindowsFormsHost Grid.Column="1" Grid.Row="2">
-            <chart:Chart BackColor="White" >
-                <chart:Chart.Series >
-                    <chart:Series x:Name="volt_series1" ChartType="Spline"/>
-                </chart:Chart.Series>
-                <chart:Chart.ChartAreas>
-                    <chart:ChartArea/>
-                </chart:Chart.ChartAreas>
-            </chart:Chart>
-        </WindowsFormsHost>
-        
-        <WindowsFormsHost Grid.Column="1" Grid.Row="3">
-            <chart:Chart BackColor="White" >
-                <chart:Chart.Series >
-                    <chart:Series x:Name="volt_series2" ChartType="Spline"/>
-                </chart:Chart.Series>
-                <chart:Chart.ChartAreas>
-                    <chart:ChartArea/>
-                </chart:Chart.ChartAreas>
-            </chart:Chart>
-        </WindowsFormsHost>
-        
-        <WindowsFormsHost Grid.Column="2" Grid.Row="2">
-            <chart:Chart BackColor="White" >
-                <chart:Chart.Series >
-                    <chart:Series x:Name="volt_series3" ChartType="Spline"/>
-                </chart:Chart.Series>
-                <chart:Chart.ChartAreas>
-                    <chart:ChartArea/>
-                </chart:Chart.ChartAreas>
-            </chart:Chart>
-        </WindowsFormsHost>
 
-        <WindowsFormsHost Grid.Column="2" Grid.Row="3">
-            <chart:Chart BackColor="White" >
-                <chart:Chart.Series >
-                    <chart:Series x:Name="volt_series4" ChartType="Spline"/>
-                </chart:Chart.Series>
-                <chart:Chart.ChartAreas>
-                    <chart:ChartArea/>
-                </chart:Chart.ChartAreas>
-            </chart:Chart>
-        </WindowsFormsHost>
+        <Grid Grid.Row="1">
 
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <!--Text Blockes-->
+            <TextBlock VerticalAlignment="Top" FontSize="18" TextAlignment="Center">Wifi Adı</TextBlock>
+            <TextBlock Grid.Column="1" VerticalAlignment="Top" FontSize="18" TextAlignment="Center">Şifre</TextBlock>
+            <TextBlock Grid.Row="1" VerticalAlignment="Top" FontSize="18" TextAlignment="Center">Latitude</TextBlock>
+            <TextBlock Grid.Row="1" VerticalAlignment="Top" FontSize="18" Grid.Column="1" TextAlignment="Center">Longitude</TextBlock>
+            <!--Text Boxes-->
+            <TextBox x:Name="gps_lat" Grid.Row="1" VerticalAlignment="Bottom"  IsEnabled="False" Padding="0 10 0 0" Margin="2 0 2 0"></TextBox>
+            <TextBox x:Name="gps_long" Grid.Column="1" Grid.Row="1" VerticalAlignment="Bottom" Padding="0 10 0 0"  IsEnabled="False" Margin="2 0 2 0"></TextBox>
+            <TextBox x:Name="wifiName" VerticalAlignment="Bottom"  MouseLeftButtonDown="clickToWifiName" Padding="0 10 0 0" Margin="2 0 2 0"></TextBox>
+            <PasswordBox x:Name="password" Grid.Column="1" VerticalAlignment="Bottom" Padding="0 10 0 0" Margin="2 0 2 0"></PasswordBox>
+            <TextBlock x:Name="durum" Grid.Row="3" Grid.ColumnSpan="3"  Background="Black" Foreground="White" TextAlignment="Center" FontSize="36"  >DURUM</TextBlock>
+            <!--Buttons-->
+            <Button x:Name="connectWifi" Style="{StaticResource buttonStyle}" Grid.Column="2" Content="Bağlan"  Click="ConnectToTalia" VerticalAlignment="Center" MinHeight="30" MinWidth="90" HorizontalAlignment="Center" FontWeight="Bold"  FontFamily="Segoe WP Black" Margin="0 20 0 0" />
+            <Button x:Name="groundLocation" Style="{StaticResource buttonStyle}" Grid.Column="2" Grid.Row="1" Click="groundLocationSet" FontWeight="Bold" FontFamily="Segoe WP Black" HorizontalAlignment="Center" MinHeight="30" MinWidth="90" Margin="0 20 0 0"  VerticalAlignment="Center" FontSize="11">Konum Belirle</Button>
+
+        </Grid>
+
+        <!--#region Charts-->
+        <Border Grid.Column="1" Grid.Row="2" BorderBrush="Black" BorderThickness="3">
+            <WindowsFormsHost >
+                <chart:Chart BackColor="White" x:Name="chart1">
+                    <chart:Chart.Series >
+                        <chart:Series x:Name="pressure_series" ChartType="Spline"/>
+                    </chart:Chart.Series>
+                    <chart:Chart.ChartAreas>
+                        <chart:ChartArea  x:Name="area1"/>
+                    </chart:Chart.ChartAreas>
+                </chart:Chart>
+            </WindowsFormsHost>
+        </Border>
+
+        <Border Grid.Column="2" Grid.Row="1" BorderBrush="Black" BorderThickness="3">
+            <WindowsFormsHost >
+                <chart:Chart BackColor="White" x:Name="chart2" >
+                    <chart:Chart.Series >
+                        <chart:Series x:Name="height_series" ChartType="Spline"/>
+                    </chart:Chart.Series>
+                    <chart:Chart.ChartAreas>
+                        <chart:ChartArea x:Name="area2"/>
+                    </chart:Chart.ChartAreas>
+                </chart:Chart>
+            </WindowsFormsHost>
+        </Border>
+
+        <Border Grid.Column="1" Grid.Row="1" BorderBrush="Black" BorderThickness="3">
+            <WindowsFormsHost  >
+                <chart:Chart BackColor="White" x:Name="chart3">
+                    <chart:Chart.Series >
+                        <chart:Series x:Name="volt_series" ChartType="Spline" />
+                    </chart:Chart.Series>
+                    <chart:Chart.ChartAreas>
+                        <chart:ChartArea x:Name="area3"/>
+                    </chart:Chart.ChartAreas>
+                </chart:Chart>
+            </WindowsFormsHost>
+        </Border>
+
+
+        <Border Grid.Column="3" Grid.Row="1" BorderBrush="Black" BorderThickness="3">
+            <WindowsFormsHost  HorizontalAlignment="Stretch" Margin="-3,-3,0,0">
+                <chart:Chart x:Name="chart4"  >
+                    <chart:Chart.Series >
+                        <chart:Series x:Name="speed_series" ChartType="Spline" />
+                    </chart:Chart.Series>
+                    <chart:Chart.ChartAreas>
+                        <chart:ChartArea x:Name="area4" BackColor="White"/>
+                    </chart:Chart.ChartAreas>
+                </chart:Chart>
+            </WindowsFormsHost>
+        </Border>
+
+        <Border Grid.Column="1" Grid.Row="3" BorderBrush="Black" BorderThickness="3">
+            <WindowsFormsHost  HorizontalAlignment="Stretch" Margin="-3,-3,0,0">
+                <chart:Chart x:Name="chart5"  >
+                    <chart:Chart.Series >
+                        <chart:Series x:Name="temp_series" ChartType="Spline" />
+                    </chart:Chart.Series>
+                    <chart:Chart.ChartAreas>
+                        <chart:ChartArea x:Name="area5" BackColor="White"/>
+                    </chart:Chart.ChartAreas>
+                </chart:Chart>
+            </WindowsFormsHost>
+        </Border>
+        <!--#endregion-->
+
+
+        <!--#region Height Bar-->
+        <Grid Grid.Row="2" Grid.Column="3" Grid.RowSpan="2" Margin="260 10 10 0" RenderTransformOrigin="0.5,0.5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="195*"/>
+                <RowDefinition Height="62*"/>
+            </Grid.RowDefinitions>
+
+            <ProgressBar x:Name="height" Minimum="0" Maximum="1000"  
+                          Value="600"
+                          Foreground="Gray"  Visibility="Visible" Margin="-2,122,-466,-52" Grid.Row="1">
+                <ProgressBar.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="-90"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </ProgressBar.RenderTransform>
+            </ProgressBar>
+
+
+            <TextBlock x:Name="heightValue"
+                   Text="{Binding ElementName=height,Path=Value,StringFormat={}{0:0}m}" 
+                   HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="Black" Foreground="White"
+                   Padding="0 10 0 0" FontWeight="Bold" FontSize="18" Height="45" Margin="0,236,0,109"
+                   >
+                <TextBlock.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="0"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </TextBlock.RenderTransform>
+            </TextBlock>
+
+        </Grid>
+
+        <!--#endregion-->
 
 
     </Grid>
+
+
 </Window>

@@ -10,29 +10,32 @@ namespace TaliaGroundStation
     {
         ground,
         climbing,
+        maxHeight,
         falling,
         leaving,
+        afterLeaving,
         waitingToRescue,
     }
 
-    class Telemetry
+    public class Telemetry
     {
-        public String _takımNo { get; set; }
-        public int _paketNo { get; set; }
-        public String _time { get; set; }
-        public double _pressure { get; set; }
-        public double _height { get; set; }
-        public double _velocity { get; set; }
-        public double _volt { get; set; }
-        public double _gps_lat { get; set; }//map
-        public double _gps_long { get; set; }//map
-        public double _altitude { get; set; }
-        public Status _status { get; set; }//text boxta göster
-        public double _pitch { get; set; }
-        public double _roll { get; set; }
-        public double _yaw { get; set; }
-        public int _rollCount { get; set; }
-        public string _isVideoSent { get; set; } //
+        public String TakımNo { get; set; }
+        public int PaketNo { get; set; }
+        public String Time { get; set; }
+        public double Pressure { get; set; }
+        public double Height { get; set; }
+        public double Velocity { get; set; }
+        public double Temperature { get; set; }
+        public double Volt { get; set; }
+        public double Gps_lat { get; set; }//map
+        public double Gps_long { get; set; }//map
+        public double Altitude { get; set; }
+        public Status Status { get; set; }//text boxta göster
+        public double Pitch { get; set; }
+        public double Roll { get; set; }
+        public double Yaw { get; set; }
+        public int RollCount { get; set; }
+        public string IsVideoSent { get; set; } //
     }
 
 
