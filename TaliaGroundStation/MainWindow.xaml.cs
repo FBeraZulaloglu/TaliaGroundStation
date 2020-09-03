@@ -21,6 +21,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Globalization;
 using SimpleWifi;
+using System.Windows.Controls;
 
 namespace TaliaGroundStation
 {
@@ -56,7 +57,9 @@ namespace TaliaGroundStation
         List<double> pressure_list;//series3
         List<double> height_list;//series2
         List<double> speed_list;//series1
+        List<double> temp_list;//all series x axis
         List<String> time_list;//all series x axis
+
         
         Wifi taliaWifi;
         string fileName = null;
@@ -79,6 +82,7 @@ namespace TaliaGroundStation
             height_list = new List<double>();
             volt_list = new List<double>();
             speed_list = new List<double>();
+            temp_list = new List<double>();
             time_list = new List<String>();
             taliaWifi = new Wifi();
             taliaWifi.ConnectionStatusChanged += ConnectionStatusChanged;
@@ -90,16 +94,15 @@ namespace TaliaGroundStation
             telemetry_table.Items.Clear();// to run the item source
         }
 
-
+        #region Window Actions
         private void WindowLoaded(object sender, RoutedEventArgs e)
         {
+            SetCharts();
             startVideo();
+            videoElement.LoadedBehavior = MediaState.Manual;
+            videoElement.UnloadedBehavior = MediaState.Manual;
             telemetry_timer_start(1000);
 
-            setChart1();
-            setChart2();
-            setChart3();
-            setChart4();
         }
 
         private void ProgramClosed(object sender, EventArgs e)
@@ -107,6 +110,7 @@ namespace TaliaGroundStation
             //video writerı kapat
             writer.Close();
         }
+        #endregion
 
         #region Taze telemetri verisi :)
         private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -115,8 +119,12 @@ namespace TaliaGroundStation
             
             Dispatcher.BeginInvoke((Action)(() => {
                 //yeni data geldiği anda kaydet
-                File.WriteAllText("TMUY2020_57413_TLM.csv", talia_csv.ToString());
+                //File.WriteAllText("TMUY2020_57413_TLM.csv", talia_csv.ToString());
                 
+                durum.Text = talia_durum;
+               
+                height.Value = current_telemetry.Height;
+
                 //telemetry tablosunu yenile
                 telemetry_table.Items.Refresh();
                 if(obsSender != null)
@@ -125,7 +133,7 @@ namespace TaliaGroundStation
                 //scroll barı sona getir
                 if (telemetry_table.Items.Count > 0)
                 {
-                    var border = System.Windows.Media.VisualTreeHelper.GetChild(telemetry_table, 0) as System.Windows.Controls.Decorator;
+                    var border = System.Windows.Media.VisualTreeHelper.GetChild(telemetry_table, 0) as Decorator;
                     if (border != null)
                     {
                         var scroll = border.Child as System.Windows.Controls.ScrollViewer;
@@ -135,26 +143,36 @@ namespace TaliaGroundStation
 
                 //grafiklerde kullanılacak olan zaman verisini ekle
                 time_list.Add(DateTime.Now.ToString("hh:mm:ss"));// add time just once
-                Chart1AddData();
-                Chart2AddData();
-                Chart3AddData();
-                Chart4AddData();
+                AddDataToCharts();
 
-                //grafikleri yenilemek
+                //grafikler 20 veriden fazla veri göstermemeleri için
                 if (time_list.Count > 20)
                 {
                     time_list.RemoveAt(0);
+                }
+                if (pressure_list.Count > 20)
+                {
                     pressure_list.RemoveAt(0);
-                    height_list.RemoveAt(0);
+                }
+                if (temp_list.Count > 20)
+                {
+                    temp_list.RemoveAt(0);
+                }
+                if (speed_list.Count > 20)
+                {
                     speed_list.RemoveAt(0);
                 }
+                if (height_list.Count > 20)
+                {
+                    height_list.RemoveAt(0);
+                }
                 //simülasyonun değerlerini yerleştir
-                //simulation.roll = current_telemetry.Roll;
-                //simulation.pitch = current_telemetry.Pitch;
-                //simulation.yaw = current_telemetry.Yaw;
-                //simulation.rollCount = current_telemetry.RollCount;
+                simulation.roll = current_telemetry.Roll;
+                simulation.pitch = current_telemetry.Pitch;
+                simulation.yaw = current_telemetry.Yaw;
+                simulation.rollCount = current_telemetry.RollCount;
                 //uydu ile yer istasyonu arasındaki mesafeyi bul ve haritayı yenile
-                getDistance();
+
                 mapView.Position = new PointLatLng(current_telemetry.Gps_lat, current_telemetry.Gps_long);
                 talia_marker.Position = new PointLatLng(current_telemetry.Gps_lat, current_telemetry.Gps_long);
             }));
@@ -167,9 +185,9 @@ namespace TaliaGroundStation
         {
             //servonun çalışması için komut gönder
             //send command to start the servo motor
-            if(openLock.Content.Equals("Manuel Ayrılma"))
+            using (WebClient wb = new WebClient())
             {
-                using (WebClient wb = new WebClient())
+                if (openLock.Content.Equals("Manuel Ayrılma"))
                 {
                     byte[] lock_open = { (byte)'4' };
                     try
@@ -184,10 +202,7 @@ namespace TaliaGroundStation
                     }
 
                 }
-            }
-            else
-            {
-                using (WebClient wb = new WebClient())
+                else
                 {
                     byte[] lock_open = { (byte)'5' };
                     try
@@ -200,41 +215,37 @@ namespace TaliaGroundStation
                     {
                         Console.WriteLine(ex.Message);
                     }
-
                 }
-
             }
         }
-           
+
 
         private void OpenBuzzer(object sender, RoutedEventArgs e)
         {
             //buzzerın çalışmkası için komut gönder
             //send command to start buzzer açmak için 2 kapatmak için 3
-            if (openBuzzer.Content.Equals("Buzzer Aç"))
+            using (WebClient wb = new WebClient())
             {
-                using (WebClient wb = new WebClient())
+                if (openBuzzer.Content.Equals("Buzzer Aç"))
                 {
+
                     byte[] open = { 2 };
                     try
                     {
                         wb.UploadData("http://192.168.4.1/command", open);
+                        openBuzzer.Content = "Buzzer Kapat";
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex.Message);
                     }
-                    
+
                 }
-                openBuzzer.Content = "Buzzer Kapat";
-            }
-            else
-            {
-                using (WebClient wb = new WebClient())
+                else
                 {
                     byte[] close = { 3 };
                     wb.UploadData("http://192.168.4.1/command", close);
-                    openBuzzer.Content = "Buzzer Kapat";
+                    openBuzzer.Content = "Buzzer Aç";
                 }
             }
         }
@@ -244,11 +255,11 @@ namespace TaliaGroundStation
         {
             using (WebClient wb = new WebClient())
             {
-                byte[] reset = { (byte)'5' };
+                byte[] reset = { (byte)'6' };
                 try
                 {
                     wb.UploadData("http://192.168.4.1/command", reset);
-                    MessageBox.Show("KAPATILI.");
+                    MessageBox.Show("KAPATILDI.");
                 }
                 catch (Exception ex)
                 {
@@ -263,17 +274,37 @@ namespace TaliaGroundStation
         {
             using (WebClient wb = new WebClient())
             {
-                byte[] reset = { (byte)'7' };
-                try
+                if (aktifInis.Content.Equals("Manuel Tahrik"))
                 {
-                    wb.UploadData("http://192.168.4.1/command", reset);
-                    MessageBox.Show("Aktıf çalıştı.");
+                    byte[] reset = { (byte)'7' };
+                    try
+                    {
+                        wb.UploadData("http://192.168.4.1/command", reset);
+                        MessageBox.Show("Aktif İniş Sistemi Çalıştı.");
+                        aktifInis.Content = "Tahrik Kapat";
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        //eeprom sıfırlanamadı tekrar deneyin
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    Console.WriteLine(ex.Message);
-                    //eeprom sıfırlanamadı tekrar deneyin
+                    byte[] reset = { (byte)'8' };
+                    try
+                    {
+                        wb.UploadData("http://192.168.4.1/command", reset);
+                        MessageBox.Show("Aktif İniş Sistemi Çalıştı.");
+                        aktifInis.Content = "Manuel Tahrik";
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        //Motor Kapatılamadı
+                    }
                 }
+                
 
             }
         }
@@ -282,21 +313,18 @@ namespace TaliaGroundStation
         #region Extra Windows
         private void videoSending(object sender, RoutedEventArgs e)
         {
-            /*TransmitVideo tVideo = new TransmitVideo();
-            tVideo.Show();*/
-
-            //Show File Dialog
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            //openFileDialog.Filter = "Video Files";
-            
-            if (openFileDialog.ShowDialog() == true)
+            if (!backgroundWorker.IsBusy)
             {
-                fileName = openFileDialog.FileName;
                 backgroundWorker.RunWorkerAsync();
-            }
 
-            // Send file fileName to remote device
-            Console.WriteLine(fileName);
+                // Send file fileName to remote device
+                Console.WriteLine(fileName);
+            }
+            else
+            {
+                Console.WriteLine("Background is busy");
+            }
+            
         }
 
         private void backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -314,16 +342,22 @@ namespace TaliaGroundStation
                         //await Conversion.Convert("inputfile.mkv", "file.mp4").Start()
                         client.UploadProgressChanged += client_UploadProgressChanged;
                         System.Threading.Tasks.Task<byte []> task;
-                        task = client.UploadFileTaskAsync(new Uri(file_ip), "POST",fileName);
-                        MessageBox.Show(task.Result.ToString());
+                        MessageBox.Show("Dosya Gönderme İşlemi Başlatıldı");
+                        
+                        task = client.UploadFileTaskAsync(new Uri(file_ip), "POST", fileName);
+                        Console.WriteLine("TASK RESULT TO STRİNG" + task.Result.ToString());
 
                         if (task.IsCompleted)
                         {
+                            Dispatcher.Invoke((Action)(() =>
+                            {
+                                IsVideoSent.IsChecked = true;
+                            }));
+                            
                             MessageBox.Show("Video gönderimi tamamlandı. Tebrikler. Elhamdülillah :)");
                         }
 
                         //MessageBox.Show("Remote Response: {0}", System.Text.Encoding.ASCII.GetString(rawResponse));
-
                     }
                     catch (Exception ex)
                     {
@@ -334,7 +368,7 @@ namespace TaliaGroundStation
             }
             else
             {
-                MessageBox.Show("You Haven't Chosen Any File");
+                MessageBox.Show("Herhangi bir dosya yüklemediniz.");
             }
             
         }
@@ -343,6 +377,11 @@ namespace TaliaGroundStation
         {
             // file gönderirken aktif olacak event
             Console.WriteLine("Percentege ::: "+e.ProgressPercentage);
+            Dispatcher.Invoke((Action)(()=>
+            {
+                SendVideoPercentage.Value = e.ProgressPercentage;
+            }));
+            
         }
 
         private void OpenFullMap(object sender, MouseButtonEventArgs e)
@@ -354,68 +393,86 @@ namespace TaliaGroundStation
 
         #region Charts
 
-        private void setChart1()
+        private void setPressureChart()
         {
-            area1.AxisX.MajorGrid.LineColor = System.Drawing.Color.Red;
-            area1.AxisY.MajorGrid.LineColor = System.Drawing.Color.Red;
+            pressureArea.AxisX.MajorGrid.LineColor = Color.Red;
+            pressureArea.AxisY.MajorGrid.LineColor = Color.Red;
 
-            pressure_series.Color = System.Drawing.Color.Green;
-            pressure_series.BorderWidth = 2;
+            pressureSeries.Color = Color.Green;
+            pressureSeries.BorderWidth = 3;
 
-            area1.AxisY.LabelAutoFitStyle = LabelAutoFitStyles.WordWrap;
-            area1.AxisY.Minimum = 80;
-            area1.AxisY.Maximum = 120;
-            area1.AxisX.Interval = 1.0;
+            pressureArea.AxisY.LabelAutoFitStyle = LabelAutoFitStyles.WordWrap;
+            pressureArea.AxisY.Minimum = 80;
+            pressureArea.AxisY.Maximum = 120;
+            pressureArea.AxisX.Interval = 1.0;
 
-            chart1.Titles.Add("Basınç(kPa)/Zaman");
-            pressure_series.Points.DataBindXY(time_list, pressure_list);
+            pressureChart.Titles.Add("Basınç(kPa)/Zaman");
+            pressureSeries.Points.DataBindXY(time_list, pressure_list);
         }
 
-        private void setChart2()
+        private void setHeightChart()
         {
-            area2.AxisX.MajorGrid.LineColor = Color.Red;
-            area2.AxisY.MajorGrid.LineColor = Color.Red;
-            height_series.BorderWidth = 2;
-            height_series.Color = Color.Green;
-            area2.AxisY.Maximum = 700;
-            area2.AxisY.LabelAutoFitStyle = LabelAutoFitStyles.IncreaseFont;
-            area2.AxisX.Interval = 1.0;
+            heightArea.AxisX.MajorGrid.LineColor = Color.Red;
+            heightArea.AxisY.MajorGrid.LineColor = Color.Red;
 
-            chart2.Titles.Add("Yükseklik(metre)/Zaman");
-            height_series.Points.DataBindXY(time_list, height_list);
+            heightSeries.BorderWidth = 3;
+            heightSeries.Color = Color.Green;
+
+            heightArea.AxisY.Maximum = 700;
+            heightArea.AxisY.LabelAutoFitStyle = LabelAutoFitStyles.IncreaseFont;
+            heightArea.AxisX.Interval = 1.0;
+
+            heightChart.Titles.Add("Yükseklik(metre)/Zaman");
+            heightSeries.Points.DataBindXY(time_list, height_list);
         }
 
-        private void setChart3()
+        private void setVoltChart()
         {
-            area3.AxisX.MajorGrid.LineColor = Color.Red;
-            area3.AxisY.MajorGrid.LineColor = Color.Red;
+            voltArea.AxisX.MajorGrid.LineColor = Color.Red;
+            voltArea.AxisY.MajorGrid.LineColor = Color.Red;
 
-            volt_series.Color = System.Drawing.Color.Green;
-            volt_series.BorderWidth = 2;
-            area3.AxisY.Maximum = 10;
-            area3.AxisX.Interval = 1.0;
-            area3.AxisY.LabelAutoFitStyle = LabelAutoFitStyles.IncreaseFont;
-            area3.AxisY.Maximum = 10;
+            voltSeries.Color = Color.Green;
+            voltSeries.BorderWidth = 3;
+            voltArea.AxisY.Maximum = 10;
+            voltArea.AxisX.Interval = 1.0;
+            voltArea.AxisY.LabelAutoFitStyle = LabelAutoFitStyles.IncreaseFont;
+            voltArea.AxisY.Maximum = 10;
 
-            chart3.Titles.Add("Volt(V)/Zaman");
-            volt_series.Points.DataBindXY(time_list, volt_list);
+            voltChart.Titles.Add("Volt(V)/Zaman");
+            voltSeries.Points.DataBindXY(time_list, volt_list);
         }
 
-        private void setChart4()
+        private void setSpeedChart()
         {
-            area4.AxisX.MajorGrid.LineColor = System.Drawing.Color.Red;
-            area4.AxisY.MajorGrid.LineColor = System.Drawing.Color.Red;
-            area4.AxisY.Maximum = 20;
-            speed_series.BorderWidth = 3;
-            speed_series.Color = System.Drawing.Color.Green;
-            chart4.Titles.Add("Speed(m/s)/Zaman");
-            area4.AxisX.Interval = 1.0;
-            area4.AxisY.LabelAutoFitStyle = LabelAutoFitStyles.IncreaseFont;
+            speedArea.AxisX.MajorGrid.LineColor = Color.Red;
+            speedArea.AxisY.MajorGrid.LineColor = Color.Red;
+            speedArea.AxisY.Maximum = 20;
 
-            speed_series.Points.DataBindXY(time_list, speed_list);
+            speedSeries.BorderWidth = 3;
+            speedSeries.Color = System.Drawing.Color.Green;
+            speedChart.Titles.Add("Hiz(m/s)/Zaman");
+
+            speedArea.AxisX.Interval = 1.0;
+            speedArea.AxisY.LabelAutoFitStyle = LabelAutoFitStyles.IncreaseFont;
+
+            speedSeries.Points.DataBindXY(time_list, speed_list);
         }
 
-        private void Chart1AddData()
+        private void setTempChart()
+        {
+            tempArea.AxisX.MajorGrid.LineColor = Color.Red;
+            tempArea.AxisY.MajorGrid.LineColor = Color.Red;
+            tempArea.AxisY.Maximum = 60;
+            tempSeries.BorderWidth = 3;
+            tempSeries.Color = Color.Green;
+            tempChart.Titles.Add("Sıcaklık(Celcius)/Zaman");
+            tempArea.AxisX.Interval = 1.0;
+            tempArea.AxisY.LabelAutoFitStyle = LabelAutoFitStyles.IncreaseFont;
+
+            tempSeries.Points.DataBindXY(time_list, temp_list);
+        }
+
+        private void PressureChartAddData()
         {
 
             Dispatcher.BeginInvoke((Action)(() =>
@@ -426,8 +483,8 @@ namespace TaliaGroundStation
                 {
                     try
                     {
-                        pressure_series.Points.DataBindXY(time_list, pressure_list);
-                        chart1.Invalidate();
+                        pressureSeries.Points.DataBindXY(time_list, pressure_list);
+                        pressureChart.Invalidate();
                     }
                     catch(Exception ex)
                     {
@@ -439,7 +496,7 @@ namespace TaliaGroundStation
             }));
         }
 
-        private void Chart2AddData()
+        private void HeightChartAddData()
         {
 
             Dispatcher.BeginInvoke((Action)(() =>
@@ -450,8 +507,8 @@ namespace TaliaGroundStation
                 {
                     try
                     {
-                        height_series.Points.DataBindXY(time_list, height_list);
-                        chart2.Invalidate();// redrawn the graph
+                        heightSeries.Points.DataBindXY(time_list, height_list);
+                        heightChart.Invalidate();// redrawn the graph
                     }
                     catch(Exception ex)
                     {
@@ -464,7 +521,7 @@ namespace TaliaGroundStation
             }));
         }
 
-        private void Chart3AddData()
+        private void VoltChartAddData()
         {
 
             Dispatcher.BeginInvoke((Action)(() =>
@@ -475,8 +532,8 @@ namespace TaliaGroundStation
                 {
                     try
                     {
-                        volt_series.Points.DataBindXY(time_list, volt_list);
-                        chart3.Invalidate();
+                        voltSeries.Points.DataBindXY(time_list, volt_list);
+                        voltChart.Invalidate();
                     }
                     catch(Exception ex)
                     {
@@ -487,7 +544,7 @@ namespace TaliaGroundStation
             }));
         }
 
-        private void Chart4AddData()
+        private void SpeedChartAddData()
         {
             
             Dispatcher.BeginInvoke((Action)(() =>
@@ -497,8 +554,8 @@ namespace TaliaGroundStation
                 {
                     try
                     {
-                        speed_series.Points.DataBindXY(time_list, speed_list);
-                        chart4.Invalidate();
+                        speedSeries.Points.DataBindXY(time_list, speed_list);
+                        speedChart.Invalidate();
                     }
                     catch(Exception ex)
                     {
@@ -508,6 +565,48 @@ namespace TaliaGroundStation
                 }
                 
             }));
+        }
+
+        private void TempChartAddData()
+        {
+
+            Dispatcher.BeginInvoke((Action)(() =>
+            {
+                temp_list.Add(current_telemetry.Temperature);
+                if (temp_list.Count == time_list.Count)
+                {
+                    try
+                    {
+                        tempSeries.Points.DataBindXY(time_list, temp_list);
+                        tempChart.Invalidate();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.ToString() + " speed listte hata oluştu.");
+                    }
+
+                }
+
+            }));
+        }
+
+        private void SetCharts()
+        {
+            setPressureChart();
+            setVoltChart();
+            setTempChart();
+            setSpeedChart();
+            setHeightChart();
+        }
+        // adds all charts to necessary data
+        private void AddDataToCharts()
+        {
+            PressureChartAddData();
+            VoltChartAddData();
+            TempChartAddData();
+            SpeedChartAddData();
+            HeightChartAddData();
+
         }
         #endregion
 
@@ -525,15 +624,13 @@ namespace TaliaGroundStation
         // getting value
         private void getTelemetryData(object sender, ElapsedEventArgs e)
         {
-
-            Console.WriteLine("Telemtry Data İs Coming ...");
             var data = getTelemetry(telemetry_ip);
-            
             if (data != null)
             {
                 
                 try
                 {
+                    File.AppendAllText("TMUY2020_57413_TLM.csv", data+"\n");
                     //split data and show on table
                     Dispatcher.BeginInvoke((Action)(() =>
                     {
@@ -552,6 +649,7 @@ namespace TaliaGroundStation
             {
                 missing_data_counter++;
                 Console.WriteLine("data is missing ..."+missing_data_counter+". data");
+                // kaybedilen data sayısını bir texte yazdır.
             }
         }
 
@@ -590,7 +688,6 @@ namespace TaliaGroundStation
                 current_telemetry.PaketNo = int.Parse(data_array[1]);
                 current_telemetry.Time = data_array[2];
                 current_telemetry.Pressure = double.Parse(data_array[3],CultureInfo.InvariantCulture.NumberFormat);
-                Console.WriteLine("PRESSURE :::: "+current_telemetry.Pressure);
                 current_telemetry.Height = double.Parse(data_array[4], CultureInfo.InvariantCulture.NumberFormat);
                 current_telemetry.Velocity = double.Parse(data_array[5], CultureInfo.InvariantCulture.NumberFormat);
                 current_telemetry.Temperature = double.Parse(data_array[6], CultureInfo.InvariantCulture.NumberFormat);
@@ -599,7 +696,9 @@ namespace TaliaGroundStation
                 current_telemetry.Gps_long = double.Parse(data_array[9], CultureInfo.InvariantCulture.NumberFormat);
                 current_telemetry.Altitude = double.Parse(data_array[10], CultureInfo.InvariantCulture.NumberFormat);
                 decideStatus(data_array[11],current_telemetry);
-                current_telemetry.Pitch = double.Parse(data_array[12], CultureInfo.InvariantCulture.NumberFormat);
+                Console.WriteLine("Status :"+data_array[11]);
+                current_telemetry.Pitch = double.Parse(data_array[12], 
+                    CultureInfo.InvariantCulture.NumberFormat);
                 current_telemetry.Roll = double.Parse(data_array[13], CultureInfo.InvariantCulture.NumberFormat);
                 current_telemetry.Yaw = double.Parse(data_array[14], CultureInfo.InvariantCulture.NumberFormat);
                 current_telemetry.RollCount = int.Parse(data_array[15]);
@@ -650,10 +749,7 @@ namespace TaliaGroundStation
                     talia_durum = "KURTARILMAYI BEKLİYOR";
                     break;
             }
-            Dispatcher.BeginInvoke((Action)(() =>
-            {
-                durum.Text = talia_durum;
-            }));
+            
 
         }
 
@@ -735,7 +831,7 @@ namespace TaliaGroundStation
         private void groundLocationSet(object sender, RoutedEventArgs e)
         {
             //marker yer istasyonu
-            if (groundLocation.Content.Equals("Yer İstasyonu Konum Belirle"))
+            if (groundLocation.Content.Equals("Konum Belirle"))
             {
                 if (current_telemetry == null)
                 {
@@ -747,7 +843,7 @@ namespace TaliaGroundStation
                     {
                         mapView.Position = new PointLatLng(current_telemetry.Gps_lat, current_telemetry.Gps_long);
                         ground_marker.Position = new PointLatLng(current_telemetry.Gps_lat, current_telemetry.Gps_long);
-                        groundLocation.Content = "Yer İstasyonu Konum Değiştir";
+                        groundLocation.Content = "Konum Değiştir";
                         gps_lat.Text = current_telemetry.Gps_lat.ToString();
                         gps_long.Text = current_telemetry.Gps_long.ToString();
                         gps_lat.IsEnabled = true;
@@ -879,11 +975,7 @@ namespace TaliaGroundStation
         #endregion
 
         #region Wifi Connection
-        private void clickToWifiName(object sender, MouseButtonEventArgs e)
-        {
-            wifiName.Text = "";
-        }
-
+       
         private void ConnectToTalia(object sender, RoutedEventArgs e)
         {
             bool isWifiFound = false;
@@ -900,11 +992,19 @@ namespace TaliaGroundStation
                         bool isConnected = ap.Connect(request);
                         if (isConnected)
                         {
+                            wifiQuality.Text = ap.Name + " : " + ap.SignalStrength+"%";
+                            IsWifiConnected.IsChecked = true;
                             MessageBox.Show("Bağlantı Gerçekleşti.");
                             wifiAd = wifiName.Text;
                         }
                         else
                         {
+                            wifiQuality.Text = "Bağlı olunan bir ağ bulunamadı";
+                            Dispatcher.Invoke((Action)(() =>
+                            {
+                                IsWifiConnected.IsChecked = false;
+                            }));
+                            
                             MessageBox.Show("Bağlantı Gerçekleşmedi. Tekrar Deneyin.");
                         }
                     }
@@ -915,6 +1015,10 @@ namespace TaliaGroundStation
                     MessageBox.Show("Wifi İsmi Bulunamamaktadır. Tekrar Deneyin.");
                 }
             }
+            else
+            {
+                MessageBox.Show("Wifi adı veya şifre boş bırakılamaz");
+            }
         }
 
         private void ConnectionStatusChanged(object sender, WifiStatusEventArgs e)
@@ -923,6 +1027,8 @@ namespace TaliaGroundStation
             {
                 if (taliaWifi.ConnectionStatus.Equals(WifiStatus.Disconnected))
                 {
+                    wifiQuality.Text = "Ağ bağlantısı koptu";
+                    IsWifiConnected.IsChecked = false;
                     Console.WriteLine("WİFİ BAĞLANTISI KOPTU");
                     if (wifiAd != null)
                     {
@@ -936,6 +1042,11 @@ namespace TaliaGroundStation
                                 AuthRequest request = new AuthRequest(ap);
                                 request.Password = password.Password;
                                 ap.Connect(request);
+                                if (ap.IsConnected)
+                                {
+                                    wifiQuality.Text = ap.Name + " : " + ap.SignalStrength + "%";
+                                    IsWifiConnected.IsChecked = true;
+                                }
                             }
                         }
                     }
@@ -943,6 +1054,36 @@ namespace TaliaGroundStation
             }));
         }
         #endregion
+
+        #region Video Gönderme
+         
+
+        private void DropVideoToMedia(object sender, DragEventArgs e)
+        {
+            Console.WriteLine("Drop file a girildi");
+            string file = (string)((DataObject)e.Data).GetFileDropList()[0];
+
+            try
+            {
+                videoElement.Source = new Uri(file);
+                fileName = file;
+                Console.WriteLine(file);
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine(ex);
+            }
+
+            videoElement.Play();
+        }
+
+        private void DropVideo(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
+        #endregion
+
 
     }
 }
