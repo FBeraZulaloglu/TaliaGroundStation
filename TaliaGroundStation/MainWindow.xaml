@@ -213,7 +213,7 @@
 
             <ProgressBar x:Name="height" Minimum="0" Maximum="1000"
                           Foreground="Gray"  Visibility="Visible" 
-                         Margin="-2,122,-466,-52" Grid.Row="1">
+                         Margin="0,124,-472,-50" Grid.Row="1">
                 <ProgressBar.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform/>
@@ -251,7 +251,7 @@
             <Button x:Name="aktifInis" Style="{StaticResource buttonStyle}"    Content="Manuel Tahrik" Click="OpenAktif" Margin="0 10 0 0" FontSize="15" Height="49" />
             <Button x:Name="openBuzzer" Style="{StaticResource buttonStyle}"    Content="Buzzer Aç" Click="OpenBuzzer" Margin="0 10 0 0"  FontSize="16" Height="48"  />
 
-            <Button x:Name="Reset" Style="{StaticResource buttonStyle}" Click="resetEEPROM" Content="EEPROM SIFIRLA" Margin="0 10 0 0" Height="38"/>
+            <Button x:Name="Reset" Style="{StaticResource buttonStyle}" Click="ResetEEPROM" Content="EEPROM SIFIRLA" Margin="0 10 0 0" Height="38"/>
         </StackPanel>
 
         <!--#endregion-->

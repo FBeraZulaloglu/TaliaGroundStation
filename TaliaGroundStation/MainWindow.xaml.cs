@@ -1,4 +1,5 @@
-﻿using System;
+﻿#region Kütüphaneler/Libraries
+using System;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Input;
@@ -15,43 +16,49 @@ using GMap.NET.WindowsPresentation;
 using GMap.NET.MapProviders;
 using System.ComponentModel;
 using System.Windows.Media.Imaging;
-using Microsoft.Win32;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Globalization;
 using SimpleWifi;
 using System.Windows.Controls;
+#endregion
 
 namespace TaliaGroundStation
 {
     /// <summary>
     /// Talia Model Uydunun Yer İstasyon Yazılımı.
-    /// Verilerin Görünütlenmesi Ve Kaydedilmesi Amaçlı Yazılmıştır.
+    /// Model Uydudan Gelen Verilerin Görünütlenmesi Ve Kaydedilmesi Amaçlı Yazılmıştır.
     /// </summary>
     
     public partial class MainWindow : Window
     {
 
         #region variables
-        readonly AVIWriter writer;
+        //tüm verilerin bulunduğu telemetri listesi
         public ObservableCollection<Telemetry> Telemetry_list { get; set; }
-        string video_ip;
-        string telemetry_ip;
-        string file_ip;
-        StringBuilder talia_csv;
-        string talia_durum;
-        string wifiAd ;
-        
+        //kullanılacak olan ip adresleri
+        readonly string video_ip;
+        readonly string telemetry_ip;
+        readonly string file_ip;
+        readonly string command_ip;
+
+        StringBuilder talia_csv; //csv dosyasına kaydetmekl için kullanılan string
+
+        string talia_durum; // uydu durumunu tutmak için kullanılan değişken
+        string[] data_array;
         Telemetry current_telemetry;
-        int missing_data_counter = 0;
+        int missing_data_counter = 0;// kaybedilen verilerin sayısını tutar
+
         public StreamReader STR;
         public StreamWriter STW;
+        readonly AVIWriter writer;
+
         BackgroundWorker backgroundWorker;
-        
+        //GPS elemanları
         GMapMarker talia_marker;
         GMapMarker ground_marker;
-        string[] data_array;
+        
         //grafik listeleri
         List<double> volt_list;//series4
         List<double> pressure_list;//series3
@@ -59,24 +66,35 @@ namespace TaliaGroundStation
         List<double> speed_list;//series1
         List<double> temp_list;//all series x axis
         List<String> time_list;//all series x axis
-
-        
+        // wifi bağlantısı başlangıç
+        string wifiAd;
         Wifi taliaWifi;
         string fileName = null;
+        //wifi bağlantısı bitiş
+        Login login_window;
         #endregion
 
         public MainWindow()
         {
             InitializeComponent();
-            data_array = new string[17];
+            //ip adresleri başlangıç
             video_ip = "http://192.168.4.1/picture";
             telemetry_ip = "http://192.168.4.1/data";
             file_ip = "http://192.168.4.1/file";
+            command_ip = "http://192.168.4.1/command";
+            //ip adresleri bitiş
             writer = new AVIWriter();
+            login_window = new Login();
+        }
+
+        #region Window Actions/Ekran Durumları
+        private void WindowLoaded(object sender, RoutedEventArgs e)
+        {
+            data_array = new string[17];
             writer.Open("TMUY2020_57413_VIDEO.avi", 800, 600);
             talia_csv = new StringBuilder();
-            talia_csv.Append("TAKIM NO,PAKET NO,ZAMAN,BASINC,YUKSEKLIK,HIZ,SICAKLIK,VOLT,LAT,LONG,ALTITUDE,DURUM,PITCH,ROLL,YAW,DONUS SAYISI,VIDEO AKTARILDI"+"\n");
-            talia_marker = new GMapMarker(new PointLatLng(42,21));
+            talia_csv.Append("TAKIM NO,PAKET NO,ZAMAN,BASINC,YUKSEKLIK,HIZ,SICAKLIK,VOLT,LAT,LONG,ALTITUDE,DURUM,PITCH,ROLL,YAW,DONUS SAYISI,VIDEO AKTARILDI" + "\n");
+            talia_marker = new GMapMarker(new PointLatLng(42, 21));
             Telemetry_list = new ObservableCollection<Telemetry>();
             pressure_list = new List<double>();
             height_list = new List<double>();
@@ -88,26 +106,30 @@ namespace TaliaGroundStation
             taliaWifi.ConnectionStatusChanged += ConnectionStatusChanged;
             videoPlayer.NewFrame += VideoPlayer_NewFrame;// works when new frame came
             mapView.OnPositionChanged += new PositionChanged(MainMap_OnPositionChanged);
+
             backgroundWorker = new BackgroundWorker();
             backgroundWorker.DoWork += backgroundWorker_DoWork;
             Telemetry_list.CollectionChanged += this.OnCollectionChanged;
-            telemetry_table.Items.Clear();// to run the item source
-        }
 
-        #region Window Actions
-        private void WindowLoaded(object sender, RoutedEventArgs e)
-        {
+            //telemetry_table.Items.Clear();// to run the item source
+
+            wifiName.Text = login_window.taliaWifiName;
+            password.Password = login_window.taliaPassword;
+
             SetCharts();
             startVideo();
+
             videoElement.LoadedBehavior = MediaState.Manual;
             videoElement.UnloadedBehavior = MediaState.Manual;
-            telemetry_timer_start(1000);
 
+            telemetry_timer_start(1000);//saniyede bir istek atar
+            ConnectTalia(login_window.taliaWifiName,login_window.taliaPassword);
         }
 
         private void ProgramClosed(object sender, EventArgs e)
         {
             //video writerı kapat
+            File.WriteAllText("KaybedilenVeriSayisi.txt",missing_data_counter.ToString()+" tane veri kaybedildi.");
             writer.Close();
         }
         #endregion
@@ -180,50 +202,51 @@ namespace TaliaGroundStation
         }
         #endregion
 
-        #region Commands
+        #region Commands/Komutlar
+        // uydudaki servolu mekanizmayı çalıştırır ve görev yükünü taşıyıcıdan ayrılır
         private void OpenLock(object sender, RoutedEventArgs e)
         {
             //servonun çalışması için komut gönder
             //send command to start the servo motor
-            using (WebClient wb = new WebClient())
-            {
-                if (openLock.Content.Equals("Manuel Ayrılma"))
+            
+                using (WebClient wb = new WebClient())
                 {
-                    byte[] lock_open = { (byte)'4' };
-                    try
+                    if (openLock.Content.Equals("Manuel Ayrılma"))
                     {
-                        wb.UploadData("http://192.168.4.1/command", lock_open);
-                        MessageBox.Show("Ayrılma Mekanizması Açıldı!!");
-                        openLock.Content = "Manuel Birleşme";
+                        byte[] lock_open = { (byte)'4' };
+                        try
+                        {
+                            wb.UploadData(command_ip, lock_open);
+                            MessageBox.Show("Ayrılma Mekanizması Açıldı!!");
+                            openLock.Content = "Manuel Birleşme";
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        Console.WriteLine(ex.Message);
+                        byte[] lock_open = { (byte)'5' };
+                        try
+                        {
+                            wb.UploadData(command_ip, lock_open);
+                            MessageBox.Show("Ayrılma Mekanizması Açıldı!!");
+                            openLock.Content = "Manuel Ayrılma";
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
                     }
-
                 }
-                else
-                {
-                    byte[] lock_open = { (byte)'5' };
-                    try
-                    {
-                        wb.UploadData("http://192.168.4.1/command", lock_open);
-                        MessageBox.Show("Ayrılma Mekanizması Açıldı!!");
-                        openLock.Content = "Manuel Ayrılma";
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                }
-            }
         }
-
-
+        //görev yükündeki buzzerı çalıştırır
         private void OpenBuzzer(object sender, RoutedEventArgs e)
         {
             //buzzerın çalışmkası için komut gönder
             //send command to start buzzer açmak için 2 kapatmak için 3
+
             using (WebClient wb = new WebClient())
             {
                 if (openBuzzer.Content.Equals("Buzzer Aç"))
@@ -232,7 +255,7 @@ namespace TaliaGroundStation
                     byte[] open = { 2 };
                     try
                     {
-                        wb.UploadData("http://192.168.4.1/command", open);
+                        wb.UploadData(command_ip, open);
                         openBuzzer.Content = "Buzzer Kapat";
                     }
                     catch (Exception ex)
@@ -249,27 +272,26 @@ namespace TaliaGroundStation
                 }
             }
         }
-
-
-        private void resetEEPROM(object sender, RoutedEventArgs e)
+        //esp32 deki sd kartı sıfırlar
+        private void ResetEEPROM(object sender, RoutedEventArgs e)
         {
             using (WebClient wb = new WebClient())
             {
                 byte[] reset = { (byte)'6' };
                 try
                 {
-                    wb.UploadData("http://192.168.4.1/command", reset);
-                    MessageBox.Show("KAPATILDI.");
+                    wb.UploadData(command_ip, reset);
+                    MessageBox.Show("EEPROM resetlendi.");
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
-                    //eeprom sıfırlanamadı tekrar deneyin
+                    MessageBox.Show("EEPROM resetlenemedi. Tekrar deneyin.");
                 }
 
-            }
+            }    
         }
-
+        //aktif iniş sistemini çalıştırır
         private void OpenAktif(object sender, RoutedEventArgs e)
         {
             using (WebClient wb = new WebClient())
@@ -279,14 +301,14 @@ namespace TaliaGroundStation
                     byte[] reset = { (byte)'7' };
                     try
                     {
-                        wb.UploadData("http://192.168.4.1/command", reset);
+                        wb.UploadData(command_ip, reset);
                         MessageBox.Show("Aktif İniş Sistemi Çalıştı.");
                         aktifInis.Content = "Tahrik Kapat";
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex.Message);
-                        //eeprom sıfırlanamadı tekrar deneyin
+                        //Motor açılmadı
                     }
                 }
                 else
@@ -294,7 +316,7 @@ namespace TaliaGroundStation
                     byte[] reset = { (byte)'8' };
                     try
                     {
-                        wb.UploadData("http://192.168.4.1/command", reset);
+                        wb.UploadData(command_ip, reset);
                         MessageBox.Show("Aktif İniş Sistemi Çalıştı.");
                         aktifInis.Content = "Manuel Tahrik";
                     }
@@ -304,13 +326,11 @@ namespace TaliaGroundStation
                         //Motor Kapatılamadı
                     }
                 }
-                
-
             }
         }
         #endregion
 
-        #region Extra Windows
+        #region Extra Windows/Diğer Ekranlar
         private void videoSending(object sender, RoutedEventArgs e)
         {
             if (!backgroundWorker.IsBusy)
@@ -391,7 +411,7 @@ namespace TaliaGroundStation
         }
         #endregion
 
-        #region Charts
+        #region Charts/Grafikler
 
         private void setPressureChart()
         {
@@ -610,7 +630,7 @@ namespace TaliaGroundStation
         }
         #endregion
 
-        #region  Telemetry
+        #region  Telemetry/Telemetri Verisi
 
         // timer to send reques
         private void telemetry_timer_start(int timeInterval)
@@ -650,6 +670,7 @@ namespace TaliaGroundStation
                 missing_data_counter++;
                 Console.WriteLine("data is missing ..."+missing_data_counter+". data");
                 // kaybedilen data sayısını bir texte yazdır.
+                
             }
         }
 
@@ -808,7 +829,7 @@ namespace TaliaGroundStation
 
         #endregion
 
-        #region GMap
+        #region GMap/Harita
         private void mapLoaded(object sender, RoutedEventArgs e)
         {
             setUpMap();
@@ -974,9 +995,59 @@ namespace TaliaGroundStation
         }
         #endregion
 
-        #region Wifi Connection
+        #region Wifi Connection/Wifi Bağlantısı
        
         private void ConnectToTalia(object sender, RoutedEventArgs e)
+        {
+            ConnectTalia1();// connecting with the values in text boxes // text boxların içindeki değerlerle wifi ağına bağlanır
+        }
+        //Başlangıçtaki loginden gelen verilerle bağlanır
+        public void ConnectTalia(string wifiName,string wifiPassword)
+        {
+            bool isWifiFound = false;
+            if (wifiPassword != "" && wifiName != "")
+            {
+                List<AccessPoint> pas = taliaWifi.GetAccessPoints();
+                foreach (AccessPoint ap in pas)
+                {
+                    if (ap.Name.Equals(wifiName))
+                    {
+                        isWifiFound = true;
+                        AuthRequest request = new AuthRequest(ap);
+                        request.Password = wifiPassword;
+                        bool isConnected = ap.Connect(request);
+                        if (isConnected)
+                        {
+                            wifiQuality.Text = ap.Name + " : " + ap.SignalStrength + "%";
+                            IsWifiConnected.IsChecked = true;
+                            MessageBox.Show("Bağlantı Gerçekleşti.");
+                            wifiAd = wifiName;
+                        }
+                        else
+                        {
+                            wifiQuality.Text = "Bağlı olunan bir ağ bulunamadı";
+                            Dispatcher.Invoke((Action)(() =>
+                            {
+                                IsWifiConnected.IsChecked = false;
+                            }));
+
+                            MessageBox.Show("Bağlantı Gerçekleşmedi. Tekrar Deneyin.");
+                        }
+                    }
+                }
+
+                if (!isWifiFound)
+                {
+                    MessageBox.Show("Wifi İsmi Bulunamamaktadır. Tekrar Deneyin.");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Wifi adı veya şifre boş bırakılamaz");
+            }
+        }
+
+        public void ConnectTalia1()
         {
             bool isWifiFound = false;
             if (password.Password != "" && wifiName.Text != "")
@@ -992,7 +1063,7 @@ namespace TaliaGroundStation
                         bool isConnected = ap.Connect(request);
                         if (isConnected)
                         {
-                            wifiQuality.Text = ap.Name + " : " + ap.SignalStrength+"%";
+                            wifiQuality.Text = ap.Name + " : " + ap.SignalStrength + "%";
                             IsWifiConnected.IsChecked = true;
                             MessageBox.Show("Bağlantı Gerçekleşti.");
                             wifiAd = wifiName.Text;
@@ -1004,7 +1075,7 @@ namespace TaliaGroundStation
                             {
                                 IsWifiConnected.IsChecked = false;
                             }));
-                            
+
                             MessageBox.Show("Bağlantı Gerçekleşmedi. Tekrar Deneyin.");
                         }
                     }
@@ -1055,8 +1126,8 @@ namespace TaliaGroundStation
         }
         #endregion
 
-        #region Video Gönderme
-         
+        #region Send Video To ESP32(model satelite)/Video Gönderme
+
 
         private void DropVideoToMedia(object sender, DragEventArgs e)
         {
@@ -1083,7 +1154,5 @@ namespace TaliaGroundStation
             this.DragMove();
         }
         #endregion
-
-
     }
 }

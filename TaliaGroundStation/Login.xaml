@@ -1,16 +1,53 @@
-﻿<Window x:Class="TaliaGroundStation.Login"
+﻿<Window x:Name="TaliaLogin" x:Class="TaliaGroundStation.Login"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TaliaGroundStation"
         mc:Ignorable="d"
-        Title="Login" Height="450" Width="800">
+        Title="GİRİŞ" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized" WindowStyle="ToolWindow" Background="#FFA84C4C" Loaded="LoginLoaded">
     <Grid>
-        <Image Source="TaliaLogo.png" Margin="22,23,630,305" Opacity="100"></Image>
-        <Label Content="Password" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="219,170,0,0" Width="69"/>
-        <PasswordBox x:Name="password" HorizontalAlignment="Left" Margin="308,178,0,0" VerticalAlignment="Top" Width="125"/>
-        <Button Content="Set Password" HorizontalAlignment="Left" Margin="308,220,0,0" VerticalAlignment="Top" Width="98" Height="25" Click="CreatePassword"/>
-        <Button Content="Main Window" HorizontalAlignment="Left" Margin="457,170,0,0" VerticalAlignment="Top" Width="95" Height="27" Click="OpenMainWindow"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        
+        <Image Grid.RowSpan="7" Grid.ColumnSpan="9" Source="TaliaLogo.png" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Opacity="1" Height="349" Margin="46,32,74,38" Width="672"></Image>
+        
+        <Label Grid.Row="3" Grid.Column="2" Content="Password" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" Margin="0 0 0 0"/>
+        <PasswordBox Grid.Row="3" Grid.Column="3" x:Name="password" IsHitTestVisible="False" FontSize="20" HorizontalAlignment="Center"  VerticalAlignment="Center" Padding="0 10 100 0"/>
+        <Button Grid.Row="3" Grid.Column="4" Style="{StaticResource buttonStyle}" Content="Set Password" HorizontalAlignment="Center" VerticalAlignment="Center"  Width="98" Height="25" Click="CreatePassword"/>
+        <Button Grid.Row="5" Grid.Column="5" Grid.ColumnSpan="2" Grid.RowSpan="2" Style="{StaticResource buttonStyle}" Content="Giriş" Margin="20 10 20 10" Click="OpenMainWindow"/>
+         <!--#region  Wifi Connection-->
+        <StackPanel Grid.RowSpan="3">
+            <TextBlock VerticalAlignment="Top" FontSize="18" TextAlignment="Center">Wifi Adı</TextBlock>
+            <TextBox x:Name="wifiName" VerticalAlignment="Bottom"   Padding="0 10 0 0" Margin="2 5 2 5"></TextBox>
+            <TextBlock Grid.Column="1" VerticalAlignment="Top" FontSize="18" TextAlignment="Center">Şifre</TextBlock>
+            <PasswordBox x:Name="wifiPassword" Padding="0 10 0 0"></PasswordBox>
+            <Button x:Name="connectWifi" Style="{StaticResource buttonStyle}"
+                    Grid.Column="2" Click="ConnectToTalia" Margin="0 20 0 0"
+                    VerticalAlignment="Center" MinHeight="30" MinWidth="90" HorizontalAlignment="Center"
+                    FontWeight="Bold"  FontFamily="Segoe WP Black"  >
+            Bağlan</Button>
+        </StackPanel>
+        
+        <!--#endregion-->
+
+
+
     </Grid>
 </Window>

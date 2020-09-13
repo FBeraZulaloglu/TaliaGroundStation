@@ -89,12 +89,6 @@
     <Reference Include="GMap.NET.WindowsPresentation, Version=2.0.1.0, Culture=neutral, PublicKeyToken=b85b9027b614afef, processorArchitecture=MSIL">
       <HintPath>..\packages\GMap.NET.WinPresentation.2.0.1\lib\net40\GMap.NET.WindowsPresentation.dll</HintPath>
     </Reference>
-    <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
-      <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
-    </Reference>
-    <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
-      <HintPath>..\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Expression.Blend, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=x86" />
     <Reference Include="Microsoft.Expression.DesignHost, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=x86" />
     <Reference Include="Microsoft.Expression.Encoder, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=x86">
@@ -179,14 +173,8 @@
       <DependentUpon>FullSizeMap.xaml</DependentUpon>
     </Compile>
     <Compile Include="Gauge\GaugeViewModel.cs" />
-    <Compile Include="UserControls\Altitude_Graph.xaml.cs">
-      <DependentUpon>Altitude_Graph.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UserControls\Simulation.xaml.cs">
       <DependentUpon>Simulation.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Speed_Graph.xaml.cs">
-      <DependentUpon>Speed_Graph.xaml</DependentUpon>
     </Compile>
     <Compile Include="TaliaServer.cs" />
     <Compile Include="Telemetry.cs" />
@@ -201,9 +189,6 @@
     </Compile>
     <Compile Include="UserControls\simulation1.xaml.cs">
       <DependentUpon>simulation1.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\Volt_Graph.xaml.cs">
-      <DependentUpon>Volt_Graph.xaml</DependentUpon>
     </Compile>
     <Page Include="Dialogs\InputDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -233,15 +218,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="UserControls\Altitude_Graph.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="UserControls\Simulation.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Speed_Graph.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -256,10 +233,6 @@
     <Page Include="UserControls\simulation1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\Volt_Graph.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
