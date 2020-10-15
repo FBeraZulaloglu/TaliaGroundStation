@@ -145,7 +145,7 @@ namespace TaliaGroundStation
                 
                 durum.Text = talia_durum;
                
-                height.Value = current_telemetry.Height;
+                //height.Value = current_telemetry.Height;
 
                 //telemetry tablosunu yenile
                 telemetry_table.Items.Refresh();
@@ -406,8 +406,9 @@ namespace TaliaGroundStation
 
         private void OpenFullMap(object sender, MouseButtonEventArgs e)
         {
-            FullSizeMap fsm = new FullSizeMap();
-            fsm.Show();
+            // iptal edildiği için kaldırıldı sonra tekrar eklenebilir.
+            //FullSizeMap fsm = new FullSizeMap();
+            //fsm.Show();
         }
         #endregion
 
@@ -779,7 +780,7 @@ namespace TaliaGroundStation
 
         #region Video
 
-            private void startVideo()
+        private void startVideo()
         {
 
             try
